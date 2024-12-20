@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 
@@ -10,20 +11,26 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject chestPrefab;
     [SerializeField] private Button generateChestButton;
 
-    [SerializeField] private int metricsCount = 2;
     [SerializeField] private int initialChestCount = 4;
     [SerializeField] private int maxChestCount = 20;
 
     private int currentChestCount;
 
-    // Start is called before the first frame update
+    [Header("Game Items")]
+    [SerializeField] private CurrencyConfig currencyConfig;
+
+    private List<CurrencyController> currencyControllers;
+
+
+    private void Awake()
+    {
+        currencyControllers = new List<CurrencyController>();
+    }
+
     private void Start()
     {
-        // Adding Metrics
-        for (int i = 0; i < metricsCount; i++)
-        {
-            AddMetrics();
-        }
+        // Adding Currencies
+        CreateCurrencies();
 
         // Adding Chest
         currentChestCount = 0;
@@ -32,16 +39,6 @@ public class UIManager : MonoBehaviour
         {
             AddChest();
         }
-    }
-    private void AddMetrics()
-    {
-        if (metricsPrefab == null)
-        {
-            Debug.LogWarning("Metrics Prefab reference is null!");
-            return;
-        }
-
-        GameObject.Instantiate(metricsPrefab, metricsPanel);
     }
 
     private void AddChest()
@@ -69,5 +66,15 @@ public class UIManager : MonoBehaviour
 
         generateChestButton.onClick.RemoveAllListeners();
         generateChestButton.onClick.AddListener(AddChest);
+    }
+
+    private void CreateCurrencies()
+    {
+        // Initializing a CurrencyController for each currency in the config
+        foreach (var currencyData in currencyConfig.currencies)
+        {
+            var currencyController = new CurrencyController(currencyData, metricsPanel, metricsPrefab);
+            currencyControllers.Add(currencyController);
+        }
     }
 }
