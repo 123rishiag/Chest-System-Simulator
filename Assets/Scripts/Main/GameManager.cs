@@ -1,8 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 
-public class UIManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [Header("UI Items")]
     [SerializeField] private Transform chestSlotContentPanel;
@@ -38,6 +39,21 @@ public class UIManager : MonoBehaviour
         AddGenerateChestButtonToListener();
     }
 
+    private void Update()
+    {
+        // Updating Chests
+        for (int i = chestControllers.Count - 1; i >= 0; i--)
+        {
+            var chestController = chestControllers[i];
+            chestController.Update();
+
+            if (chestController.ChestState == ChestState.Collected)
+            {
+                StartCoroutine(RemoveChest(chestController, 2f));
+            }
+        }
+    }
+
     private void CreateRandomChests()
     {
         for (int i = 0; i < chestConfig.minChestCount; i++)
@@ -71,9 +87,16 @@ public class UIManager : MonoBehaviour
         // Initializing a ChestController for random chest
         if (chestControllers.Count < chestConfig.maxChestCount)
         {
-            var chestController = new ChestController(chestData, chestSlotContentPanel, chestPrefab);
+            var chestController = new ChestController(this, chestData, chestSlotContentPanel, chestPrefab);
             chestControllers.Add(chestController);
         }
+    }
+
+    private IEnumerator RemoveChest(ChestController _chestController, float _timeInSeconds)
+    {
+        yield return new WaitForSeconds(_timeInSeconds);
+        _chestController.Destroy();
+        chestControllers.Remove(_chestController);
     }
 
     private ChestData GetRandomChest()
@@ -103,6 +126,18 @@ public class UIManager : MonoBehaviour
 
         Debug.LogError("Failed to select a chest. Check weight logic!");
         return null;
+    }
+
+    public bool IsAnyChestUnlocking()
+    {
+        foreach (var chestController in chestControllers)
+        {
+            if (chestController.ChestState == ChestState.Unlocking)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void CreateCurrencies()
