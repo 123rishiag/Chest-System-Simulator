@@ -5,3 +5,11 @@ public enum ChestType
     Epic,
     Legendary
 }
+
+public enum ChestState
+{
+    Locked,
+    Unlocking,
+    Unlocked,
+    Collected
+}
