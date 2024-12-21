@@ -9,6 +9,7 @@ public class CurrencyController
     public CurrencyController(CurrencyData _currencyData, Transform _parentTransform, GameObject _prefab)
     {
         // Initializing variables
+        CurrencyData = _currencyData;
         CurrencyType = _currencyData.currencyType;
         CurrencyValue = _currencyData.initialValue;
 
@@ -47,6 +48,7 @@ public class CurrencyController
     }
 
     // Getters
+    public CurrencyData CurrencyData { get; private set; }
     public CurrencyType CurrencyType { get; private set; }
     public int CurrencyValue { get; private set; }
 

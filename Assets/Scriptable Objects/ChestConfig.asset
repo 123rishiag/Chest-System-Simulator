@@ -17,6 +17,8 @@ MonoBehaviour:
   chests:
   - chestType: 0
     unlockTimeInMinutes: 0.1
+    chestUnlockCurrencyType: 1
+    chestUnlockMinutesSingleCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 100
@@ -25,7 +27,9 @@ MonoBehaviour:
       minValue: 10
       maxValue: 20
   - chestType: 1
-    unlockTimeInMinutes: 0.2
+    unlockTimeInMinutes: 30
+    chestUnlockCurrencyType: 1
+    chestUnlockMinutesSingleCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 300
@@ -34,7 +38,9 @@ MonoBehaviour:
       minValue: 20
       maxValue: 40
   - chestType: 2
-    unlockTimeInMinutes: 0.3
+    unlockTimeInMinutes: 60
+    chestUnlockCurrencyType: 1
+    chestUnlockMinutesSingleCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 600
@@ -43,7 +49,9 @@ MonoBehaviour:
       minValue: 45
       maxValue: 60
   - chestType: 3
-    unlockTimeInMinutes: 0.4
+    unlockTimeInMinutes: 180
+    chestUnlockCurrencyType: 1
+    chestUnlockMinutesSingleCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 1000

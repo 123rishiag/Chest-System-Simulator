@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +6,8 @@ public class ChestController
 {
     private float unlockTimeInMinutes;
     private float remainingTimeInSeconds;
+    private bool isCurrencyUsedToUnlock;
+    private CurrencyType chestUnlockCurrencyType;
 
     private GameManager gameManager;
 
@@ -14,12 +15,15 @@ public class ChestController
     private Button chestButton;
 
     private Image chestImage;
-    private TMP_Text chestMessage1Text;
-    private TMP_Text chestMessage2Text;
+    private TMP_Text chestMessageOneText;
+    private TMP_Text chestMessageTwoText;
+    private GameObject chestUnlockCurrencyPanel;
+    private TMP_Text chestUnlockCurrencyText;
+    private Image chestUnlockCurrencyImage;
 
     public ChestState ChestState { get; private set; }
     public ChestType ChestType { get; private set; }
-    public List<ChestRewards> Rewards { get; private set; }
+    public ChestData ChestData { get; private set; }
     public ChestController(GameManager _gameManager, ChestData _chestData, Transform _parentTransform, GameObject _prefab)
     {
         gameManager = _gameManager;
@@ -27,9 +31,12 @@ public class ChestController
         // Setting Chest Variables
         unlockTimeInMinutes = _chestData.unlockTimeInMinutes;
         remainingTimeInSeconds = unlockTimeInMinutes * 60;
+        isCurrencyUsedToUnlock = false;
+        chestUnlockCurrencyType = _chestData.chestUnlockCurrencyType;
+
         ChestState = ChestState.Locked;
         ChestType = _chestData.chestType;
-        Rewards = _chestData.rewards;
+        ChestData = _chestData;
 
         // Instantiating the prefab under the parent transform
         chestObject = Object.Instantiate(_prefab, _parentTransform);
@@ -49,20 +56,41 @@ public class ChestController
             return;
         }
 
-        chestMessage1Text = chestObject.transform.Find("ChestMessageOnePanel").GetComponentInChildren<TMP_Text>();
-        if (chestMessage1Text == null)
+        chestMessageOneText = chestObject.transform.Find("ChestMessageOnePanel").GetComponentInChildren<TMP_Text>();
+        if (chestMessageOneText == null)
         {
             Debug.LogError("Chest Message 1 Text Field not found in prefab!!");
             return;
         }
 
-        chestMessage2Text = chestObject.transform.Find("ChestMessageTwoPanel").GetComponentInChildren<TMP_Text>();
-        if (chestMessage2Text == null)
+        chestMessageTwoText = chestObject.transform.Find("ChestMessageTwoPanel").GetComponentInChildren<TMP_Text>();
+        if (chestMessageTwoText == null)
         {
             Debug.LogError("Chest Message 2 Text Field not found in prefab!!");
             return;
         }
 
+        chestUnlockCurrencyPanel = chestObject.transform.Find("ChestIcon/ChestUnlockCurrencyPanel").gameObject;
+        if (chestUnlockCurrencyPanel == null)
+        {
+            Debug.LogError("Chest Unlock Currency Panel not found in prefab!!");
+            return;
+        }
+
+        chestUnlockCurrencyText = chestObject.transform.Find("ChestIcon/ChestUnlockCurrencyPanel/ChestUnlockCurrencyContent/ChestUnlockCurrencyText").GetComponent<TMP_Text>();
+        if (chestUnlockCurrencyText == null)
+        {
+            Debug.LogError("Chest Unlock Currency Text Field not found in prefab!!");
+            return;
+        }
+
+        chestUnlockCurrencyImage = chestObject.transform.Find("ChestIcon/ChestUnlockCurrencyPanel/ChestUnlockCurrencyContent/ChestUnlockCurrencyImage").GetComponent<Image>();
+        if (chestUnlockCurrencyImage == null)
+        {
+            Debug.LogError("Chest Unlock Currency Image Field not found in prefab!!");
+            return;
+        }
+        
         UpdateUI();
     }
 
@@ -75,21 +103,54 @@ public class ChestController
 
     private void PeformStateTransition()
     {
-        switch(ChestState)
+        switch (ChestState)
         {
             case ChestState.Locked:
+                chestUnlockCurrencyPanel.SetActive(true);
                 chestButton.onClick.RemoveAllListeners();
-                chestButton.onClick.AddListener(ProcessStartUnlocking);
+                chestButton.onClick.AddListener(() =>
+                {
+                    gameManager.ConfigureButtons(
+                        () => ProcessStartUnlocking(),
+                        () => ProcessUnlockChestWithCurrency(),
+                        "Start Timer",
+                        $"Unlock With {ChestData.chestUnlockCurrencyType}s"
+                    );
+                });
                 break;
             case ChestState.Unlocking:
+                chestUnlockCurrencyPanel.SetActive(true);
                 chestButton.onClick.RemoveAllListeners();
                 ProcessUnlockChest();
+                chestButton.onClick.AddListener(() =>
+                {
+                    gameManager.ConfigureButtons(
+                        () => ProcessUnlockChestWithCurrency(),
+                        () => { },
+                        $"Unlock With {ChestData.chestUnlockCurrencyType}s",
+                        "Cancel"
+                    );
+                });
                 break;
             case ChestState.Unlocked:
+                chestUnlockCurrencyPanel.SetActive(false);
                 chestButton.onClick.RemoveAllListeners();
-                chestButton.onClick.AddListener(ProcessCollectChest);
+                chestButton.onClick.AddListener(() =>
+                {
+                    gameManager.ConfigureButtons(
+                        () => ProcessCollectChest(),
+                        () => { },
+                        "Collect Chest",
+                        GetUndoCurrencyPurchaseString()
+                    );
+                });
+                break;
+            case ChestState.Collected:
+                chestUnlockCurrencyPanel.SetActive(false);
+                chestButton.interactable = false;
                 break;
             default:
+                chestUnlockCurrencyPanel.SetActive(false);
                 break;
         }
     }
@@ -102,9 +163,14 @@ public class ChestController
     }
     private void UpdateUI()
     {
+        CurrencyData currencyData = gameManager.GetCurrencyData(chestUnlockCurrencyType);
+
         chestImage.color = GetImageColor();
-        chestMessage1Text.text = FormatTime(remainingTimeInSeconds);
-        chestMessage2Text.text = $"{ChestType} : {ChestState}";
+        chestMessageOneText.text = FormatTime(remainingTimeInSeconds);
+        chestMessageTwoText.text = $"{ChestType} : {ChestState}";
+        chestUnlockCurrencyText.text = GetCurrencyRequiredToUnlock().ToString();
+        chestUnlockCurrencyImage.sprite = currencyData.currencyImage;
+        chestUnlockCurrencyImage.color = new Color(currencyData.imageColor.r, currencyData.imageColor.g, currencyData.imageColor.b, chestUnlockCurrencyImage.color.a);
     }
 
     private void ProcessStartUnlocking()
@@ -122,12 +188,49 @@ public class ChestController
             ChestState = ChestState.Unlocked;
         }
     }
+    private void ProcessUnlockChestWithCurrency()
+    {
+        int currencyRequired = GetCurrencyRequiredToUnlock();
+        int currencyAvailable = gameManager.GetCurrency(chestUnlockCurrencyType);
 
+        if(currencyRequired <= currencyAvailable && remainingTimeInSeconds > 0)
+        {
+            gameManager.DeductCurrency(chestUnlockCurrencyType, currencyRequired);
+            ChestState = ChestState.Unlocked;
+            isCurrencyUsedToUnlock = true;
+        }
+    }
     private void ProcessCollectChest()
     {
+        foreach (var reward in ChestData.rewards)
+        {
+            int rewardRandomValue = Random.Range(reward.minValue, reward.maxValue + 1);
+            gameManager.AddCurrency(reward.currencyType, rewardRandomValue);
+        }
         ChestState = ChestState.Collected;
     }
 
+    private int GetCurrencyRequiredToUnlock()
+    {
+        // Convert minutes to seconds
+        int chestUnlockSecondsSingleCurrency = ChestData.chestUnlockMinutesSingleCurrency * 60;
+
+        // Calculate currency required with ceiling
+        int currencyRequired = Mathf.CeilToInt((float)remainingTimeInSeconds / chestUnlockSecondsSingleCurrency);
+
+        return currencyRequired;
+    }
+    private string GetUndoCurrencyPurchaseString()
+    {
+        if (isCurrencyUsedToUnlock)
+        {
+            return $"Undo {ChestData.chestUnlockCurrencyType}s Purchase";
+        }
+        else
+        {
+            return "Cancel";
+        }
+    }
     private Color GetImageColor()
     {
         switch (ChestState)

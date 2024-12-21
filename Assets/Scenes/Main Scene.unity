@@ -152,13 +152,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0da11e2ad59e6b4a8e06394dfd0be50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  metricsPanel: {fileID: 1664119883394570674}
-  metricsPrefab: {fileID: 7852301056319017168, guid: 115a7cfb2e7868944995755752eed27e, type: 3}
   chestSlotContentPanel: {fileID: 8588322937879034913}
   chestPrefab: {fileID: 1442585979719524587, guid: 609e66cd92c6b08419834ee1e992ab92, type: 3}
+  metricsPanel: {fileID: 1664119883394570674}
+  metricsPrefab: {fileID: 7852301056319017168, guid: 115a7cfb2e7868944995755752eed27e, type: 3}
+  chestProcessingPanel: {fileID: 1431709416}
+  chestProcessingActionOneButton: {fileID: 798336159}
+  chestProcessingActionTwoButton: {fileID: 739670889}
   generateChestButton: {fileID: 467165821445129939}
-  currencyConfig: {fileID: 11400000, guid: 8fdc332941bef3048b0ef9101ad27dc3, type: 2}
   chestConfig: {fileID: 11400000, guid: 5cba5710d016ede43a16940115fcbf95, type: 2}
+  currencyConfig: {fileID: 11400000, guid: 8fdc332941bef3048b0ef9101ad27dc3, type: 2}
 --- !u!4 &359121384
 Transform:
   m_ObjectHideFlags: 0
@@ -174,6 +177,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &739670889 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4190330223323271850, guid: 05da8258a141e2c489ee93090bb7d02a, type: 3}
+  m_PrefabInstance: {fileID: 2083523745296975272}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &798336159 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4411592685450985852, guid: 05da8258a141e2c489ee93090bb7d02a, type: 3}
+  m_PrefabInstance: {fileID: 2083523745296975272}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1431709416 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6470075613631912754, guid: 05da8258a141e2c489ee93090bb7d02a, type: 3}
+  m_PrefabInstance: {fileID: 2083523745296975272}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1457288457
 GameObject:
   m_ObjectHideFlags: 0

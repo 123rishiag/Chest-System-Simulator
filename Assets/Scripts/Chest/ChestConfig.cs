@@ -14,6 +14,8 @@ public class ChestData
 {
     public ChestType chestType;
     public float unlockTimeInMinutes;
+    public CurrencyType chestUnlockCurrencyType; // currency Used to Unlock Chest before Timer
+    public int chestUnlockMinutesSingleCurrency; //  minutes unlocked by a single currency
     public List<ChestRewards> rewards;
 }
 
