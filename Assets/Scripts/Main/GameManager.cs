@@ -70,6 +70,18 @@ public class UIManager : MonoBehaviour
 
     private void CreateCurrencies()
     {
+        if (currencyConfig == null)
+        {
+            Debug.LogWarning("Currency Scriptable Object reference is null!");
+            return;
+        }
+
+        if (metricsPanel == null || metricsPrefab == null)
+        {
+            Debug.LogWarning("Metrics Panel or Prefab reference is null!");
+            return;
+        }
+
         // Initializing a CurrencyController for each currency in the config
         foreach (var currencyData in currencyConfig.currencies)
         {
