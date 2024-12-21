@@ -8,6 +8,10 @@ public class CurrencyController
 
     public CurrencyController(CurrencyData _currencyData, Transform _parentTransform, GameObject _prefab)
     {
+        // Initializing variables
+        CurrencyType = _currencyData.currencyType;
+        CurrencyValue = _currencyData.initialValue;
+
         // Instantiating the prefab under the parent transform
         GameObject instance = Object.Instantiate(_prefab, _parentTransform);
 
@@ -16,10 +20,6 @@ public class CurrencyController
             Debug.LogError("Currency Prefab not found!!");
             return;
         }
-
-        // Initializing variables
-        CurrencyType = _currencyData.currencyType;
-        CurrencyValue = _currencyData.initialValue;
 
         // Finding Currency UI Elements
         currencyText = instance.transform.Find("MetricsText").GetComponent<TMP_Text>();
