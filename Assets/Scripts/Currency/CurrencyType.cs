@@ -1,5 +1,8 @@
-public enum CurrencyType
+namespace ServiceLocator.Currency
 {
-    Coin,
-    Gem
+    public enum CurrencyType
+    {
+        Coin,
+        Gem
+    }
 }
