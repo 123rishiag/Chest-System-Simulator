@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 495503187784669586}
   - component: {fileID: 7545507225926925162}
   m_Layer: 5
-  m_Name: MetricsText
+  m_Name: CurrencyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 2419389070258393494}
   - component: {fileID: 5865980802513192985}
   m_Layer: 5
-  m_Name: MetricsImage
+  m_Name: CurrencyImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 6671874249279169822}
   - component: {fileID: 3993442277008995725}
   m_Layer: 5
-  m_Name: MetricsPrefab
+  m_Name: CurrencyPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
