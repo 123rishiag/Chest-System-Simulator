@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject chestProcessingPanel;
     [SerializeField] private Button chestProcessingActionOneButton;
     [SerializeField] private Button chestProcessingActionTwoButton;
+    [SerializeField] private Button chestProcessingCloseButton;
 
     [SerializeField] private GameObject notificationPopupPanel;
     [SerializeField] private TMP_Text notificationPopupText;
@@ -258,6 +259,11 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Chest Processing Action Two Text Field not found in panel!!");
             return;
         }
+        if (chestProcessingCloseButton == null)
+        {
+            Debug.LogError("Chest Processing Close Button not found in panel!!");
+            return;
+        }
 
         // Set the panel active
         chestProcessingPanel.SetActive(true);
@@ -277,6 +283,13 @@ public class GameManager : MonoBehaviour
         chestProcessingActionTwoButton.onClick.AddListener(() =>
         {
             _onButton2Click?.Invoke();
+            chestProcessingPanel.SetActive(false);
+        });
+
+        // Configure Close Button
+        chestProcessingCloseButton.onClick.RemoveAllListeners();
+        chestProcessingCloseButton.onClick.AddListener(() =>
+        {
             chestProcessingPanel.SetActive(false);
         });
     }
