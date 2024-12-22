@@ -22,17 +22,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text notificationPopupText;
 
     [Header("Game Items")]
-    [SerializeField] private ChestConfig chestConfig;
     [SerializeField] private CurrencyConfig currencyConfig;
+    [SerializeField] private ChestConfig chestConfig;
 
-    private List<ChestController> chestControllers;
     private List<CurrencyController> currencyControllers;
+    private List<ChestController> chestControllers;
+    private Queue<ChestController> chestUnlockQueue;
 
 
     private void Awake()
     {
-        chestControllers = new List<ChestController>();
         currencyControllers = new List<CurrencyController>();
+        chestControllers = new List<ChestController>();
+        chestUnlockQueue = new Queue<ChestController>();
     }
 
     private void Start()
@@ -60,6 +62,9 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(RemoveChest(chestController, 2f));
             }
         }
+
+        // Processing Chests in Queue
+        ProcessChestsInQueue();
     }
 
     private void CreateCurrencies()
@@ -195,6 +200,30 @@ public class GameManager : MonoBehaviour
             }
         }
         return false;
+    }
+    public void AddChestToQueue(ChestController _chestController)
+    {
+        chestUnlockQueue.Enqueue(_chestController);
+    }
+    private void ProcessChestsInQueue()
+    {
+        while (chestUnlockQueue.Count > 0)
+        {
+            var chestController = chestUnlockQueue.Peek();
+            if (chestController.ChestState != ChestState.Unlock_Queue)
+            {
+                chestUnlockQueue.Dequeue();
+            }
+            else
+            {
+                if (!IsAnyChestUnlocking())
+                {
+                    chestController = chestUnlockQueue.Dequeue();
+                    chestController.ChestState = ChestState.Unlocking;
+                }
+                break;
+            }
+        }
     }
 
     private void AddGenerateChestButtonToListener()

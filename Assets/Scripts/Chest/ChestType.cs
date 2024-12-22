@@ -9,6 +9,7 @@ public enum ChestType
 public enum ChestState
 {
     Locked,
+    Unlock_Queue,
     Unlocking,
     Unlocked,
     Collected

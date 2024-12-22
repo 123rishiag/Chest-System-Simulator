@@ -6,7 +6,6 @@ public class ChestController
 {
     private float unlockTimeInMinutes;
     private float remainingTimeInSeconds;
-    private bool isCurrencyUsedToUnlock;
     private CurrencyType chestUnlockCurrencyType;
 
     private GameManager gameManager;
@@ -21,7 +20,8 @@ public class ChestController
     private TMP_Text chestUnlockCurrencyText;
     private Image chestUnlockCurrencyImage;
 
-    public ChestState ChestState { get; private set; }
+    public bool IsCurrencyUsedToUnlock { get; private set; }
+    public ChestState ChestState { get; set; }
     public ChestType ChestType { get; private set; }
     public ChestData ChestData { get; private set; }
     public ChestController(GameManager _gameManager, ChestData _chestData, Transform _parentTransform, GameObject _prefab)
@@ -31,7 +31,7 @@ public class ChestController
         // Setting Chest Variables
         unlockTimeInMinutes = _chestData.unlockTimeInMinutes;
         remainingTimeInSeconds = unlockTimeInMinutes * 60;
-        isCurrencyUsedToUnlock = false;
+        IsCurrencyUsedToUnlock = false;
         chestUnlockCurrencyType = _chestData.chestUnlockCurrencyType;
 
         ChestState = ChestState.Locked;
@@ -118,6 +118,19 @@ public class ChestController
                     );
                 });
                 break;
+            case ChestState.Unlock_Queue:
+                chestUnlockCurrencyPanel.SetActive(true);
+                chestButton.onClick.RemoveAllListeners();
+                chestButton.onClick.AddListener(() =>
+                {
+                    gameManager.ConfigureButtons(
+                        () => ProcessUnlockChestWithCurrency(),
+                        () => ProcessStopUnlocking(),
+                        $"Unlock With {ChestData.chestUnlockCurrencyType}s",
+                        "Remove from Queue"
+                    );
+                });
+                break;
             case ChestState.Unlocking:
                 chestUnlockCurrencyPanel.SetActive(true);
                 chestButton.onClick.RemoveAllListeners();
@@ -126,9 +139,9 @@ public class ChestController
                 {
                     gameManager.ConfigureButtons(
                         () => ProcessUnlockChestWithCurrency(),
-                        () => { },
+                        () => ProcessStopUnlocking(),
                         $"Unlock With {ChestData.chestUnlockCurrencyType}s",
-                        "Cancel"
+                        "Stop Unlocking"
                     );
                 });
                 break;
@@ -182,7 +195,9 @@ public class ChestController
         }
         else
         {
-            gameManager.ShowNotification("Timer Already Running for another chest!!");
+            ChestState = ChestState.Unlock_Queue;
+            gameManager.AddChestToQueue(this);
+            gameManager.ShowNotification("Timer Already Running for another chest. Adding to Queue!!");
         }
 
     }
@@ -204,13 +219,18 @@ public class ChestController
         {
             gameManager.DeductCurrency(chestUnlockCurrencyType, currencyRequired);
             ChestState = ChestState.Unlocked;
-            isCurrencyUsedToUnlock = true;
+            IsCurrencyUsedToUnlock = true;
             gameManager.ShowNotification($"Chest unlocked with {currencyRequired} {chestUnlockCurrencyType}s!!");
         }
         else
         {
             gameManager.ShowNotification($"Chest can't be unlocked. {currencyRequired} {chestUnlockCurrencyType}s required!!");
         }
+    }
+    private void ProcessStopUnlocking()
+    {
+        ChestState = ChestState.Locked;
+        gameManager.ShowNotification($"Chest stopped Unlocking!!");
     }
     private void ProcessCollectChest()
     {
@@ -226,18 +246,18 @@ public class ChestController
     }
     private void ProcessUndoCurrencyPurchase()
     {
-        if (isCurrencyUsedToUnlock)
+        if (IsCurrencyUsedToUnlock)
         {
             int currencyRequired = GetCurrencyRequiredToUnlock();
             gameManager.AddCurrency(chestUnlockCurrencyType, currencyRequired);
             ChestState = ChestState.Locked;
-            isCurrencyUsedToUnlock = false;
+            IsCurrencyUsedToUnlock = false;
             gameManager.ShowNotification($"Reverted {chestUnlockCurrencyType} chest unlock. You gained {currencyRequired} {chestUnlockCurrencyType}s!!");
         }
     }
     private string GetUndoCurrencyPurchaseString()
     {
-        return isCurrencyUsedToUnlock ? $"Undo {ChestData.chestUnlockCurrencyType}s Purchase" : "Cancel";
+        return IsCurrencyUsedToUnlock ? $"Undo {ChestData.chestUnlockCurrencyType}s Purchase" : "Cancel";
     }
     private int GetCurrencyRequiredToUnlock()
     {
@@ -255,6 +275,8 @@ public class ChestController
         {
             case ChestState.Locked:
                 return new Color(128, 128, 128, chestImage.color.a); // Grey
+            case ChestState.Unlock_Queue:
+                return new Color(128, 0, 128, chestImage.color.a); // Purple
             case ChestState.Unlocking:
                 return new Color(0, 0, 255, chestImage.color.a); // Blue
             case ChestState.Unlocked:
