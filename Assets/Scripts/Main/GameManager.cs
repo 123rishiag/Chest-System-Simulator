@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 
@@ -139,7 +138,7 @@ public class GameManager : MonoBehaviour
 
         // Fetching Random Chest
         ChestData chestData = GetRandomChest();
-        if(chestData == null)
+        if (chestData == null)
         {
             Debug.Log("Chest Data is null!");
             return;
@@ -212,7 +211,7 @@ public class GameManager : MonoBehaviour
 
     public void ConfigureButtons(System.Action _onButton1Click, System.Action _onButton2Click, string _button1Text, string _button2Text)
     {
-        TMP_Text chestProcessingActionOneText  = chestProcessingActionOneButton.GetComponentInChildren<TMP_Text>();
+        TMP_Text chestProcessingActionOneText = chestProcessingActionOneButton.GetComponentInChildren<TMP_Text>();
         TMP_Text chestProcessingActionTwoText = chestProcessingActionTwoButton.GetComponentInChildren<TMP_Text>();
 
         if (chestProcessingPanel == null)
@@ -237,7 +236,8 @@ public class GameManager : MonoBehaviour
         // Configure Button 1
         chestProcessingActionOneText.text = _button1Text;
         chestProcessingActionOneButton.onClick.RemoveAllListeners();
-        chestProcessingActionOneButton.onClick.AddListener(() => {
+        chestProcessingActionOneButton.onClick.AddListener(() =>
+        {
             _onButton1Click?.Invoke();
             chestProcessingPanel.SetActive(false);
         });
@@ -245,7 +245,8 @@ public class GameManager : MonoBehaviour
         // Configure Button 2
         chestProcessingActionTwoText.text = _button2Text;
         chestProcessingActionTwoButton.onClick.RemoveAllListeners();
-        chestProcessingActionTwoButton.onClick.AddListener(() => {
+        chestProcessingActionTwoButton.onClick.AddListener(() =>
+        {
             _onButton2Click?.Invoke();
             chestProcessingPanel.SetActive(false);
         });

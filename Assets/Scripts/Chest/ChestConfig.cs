@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "ChestConfig", menuName = "ScriptableObjects/ChestConfig")]
 public class ChestConfig : ScriptableObject

@@ -61,7 +61,7 @@ public class CurrencyController
     public void DeductCurrency(int _value)
     {
         CurrencyValue -= _value;
-        if(CurrencyValue < 0)
+        if (CurrencyValue < 0)
         {
             CurrencyValue = 0;
         }
