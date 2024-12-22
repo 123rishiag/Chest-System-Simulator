@@ -139,7 +139,7 @@ public class ChestController
                 {
                     gameManager.ConfigureButtons(
                         () => ProcessCollectChest(),
-                        () => { },
+                        () => ProcessUndoCurrencyPurchase(),
                         "Collect Chest",
                         GetUndoCurrencyPurchaseString()
                     );
@@ -178,7 +178,13 @@ public class ChestController
         if (!gameManager.IsAnyChestUnlocking())
         {
             ChestState = ChestState.Unlocking;
+            gameManager.ShowNotification("Timer Started!!");
         }
+        else
+        {
+            gameManager.ShowNotification("Timer Already Running for another chest!!");
+        }
+
     }
     private void ProcessUnlockChest()
     {
@@ -186,6 +192,7 @@ public class ChestController
         {
             remainingTimeInSeconds = 0;
             ChestState = ChestState.Unlocked;
+            gameManager.ShowNotification("Timer Completed. Chest Unlocked!!");
         }
     }
     private void ProcessUnlockChestWithCurrency()
@@ -198,18 +205,40 @@ public class ChestController
             gameManager.DeductCurrency(chestUnlockCurrencyType, currencyRequired);
             ChestState = ChestState.Unlocked;
             isCurrencyUsedToUnlock = true;
+            gameManager.ShowNotification($"Chest unlocked with {currencyRequired} {chestUnlockCurrencyType}s!!");
+        }
+        else
+        {
+            gameManager.ShowNotification($"Chest can't be unlocked. {currencyRequired} {chestUnlockCurrencyType}s required!!");
         }
     }
     private void ProcessCollectChest()
     {
+        string rewardText = string.Empty;
         foreach (var reward in ChestData.rewards)
         {
             int rewardRandomValue = Random.Range(reward.minValue, reward.maxValue + 1);
             gameManager.AddCurrency(reward.currencyType, rewardRandomValue);
+            rewardText += $" {rewardRandomValue} {reward.currencyType}s";
         }
         ChestState = ChestState.Collected;
+        gameManager.ShowNotification($"Chest Collected!! You gained {rewardText}!!");
     }
-
+    private void ProcessUndoCurrencyPurchase()
+    {
+        if (isCurrencyUsedToUnlock)
+        {
+            int currencyRequired = GetCurrencyRequiredToUnlock();
+            gameManager.AddCurrency(chestUnlockCurrencyType, currencyRequired);
+            ChestState = ChestState.Locked;
+            isCurrencyUsedToUnlock = false;
+            gameManager.ShowNotification($"Reverted {chestUnlockCurrencyType} chest unlock. You gained {currencyRequired} {chestUnlockCurrencyType}s!!");
+        }
+    }
+    private string GetUndoCurrencyPurchaseString()
+    {
+        return isCurrencyUsedToUnlock ? $"Undo {ChestData.chestUnlockCurrencyType}s Purchase" : "Cancel";
+    }
     private int GetCurrencyRequiredToUnlock()
     {
         // Convert minutes to seconds
@@ -219,17 +248,6 @@ public class ChestController
         int currencyRequired = Mathf.CeilToInt((float)remainingTimeInSeconds / chestUnlockSecondsSingleCurrency);
 
         return currencyRequired;
-    }
-    private string GetUndoCurrencyPurchaseString()
-    {
-        if (isCurrencyUsedToUnlock)
-        {
-            return $"Undo {ChestData.chestUnlockCurrencyType}s Purchase";
-        }
-        else
-        {
-            return "Cancel";
-        }
     }
     private Color GetImageColor()
     {

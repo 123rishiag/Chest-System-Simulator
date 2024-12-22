@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 
@@ -12,11 +13,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform metricsPanel;
     [SerializeField] private GameObject metricsPrefab;
 
+    [SerializeField] private Button generateChestButton;
+
     [SerializeField] private GameObject chestProcessingPanel;
     [SerializeField] private Button chestProcessingActionOneButton;
     [SerializeField] private Button chestProcessingActionTwoButton;
 
-    [SerializeField] private Button generateChestButton;
+    [SerializeField] private GameObject notificationPopupPanel;
+    [SerializeField] private TMP_Text notificationPopupText;
 
     [Header("Game Items")]
     [SerializeField] private ChestConfig chestConfig;
@@ -245,5 +249,16 @@ public class GameManager : MonoBehaviour
             _onButton2Click?.Invoke();
             chestProcessingPanel.SetActive(false);
         });
+    }
+    public void ShowNotification(string _text)
+    {
+        notificationPopupText.text = _text;
+        StartCoroutine(PopupNotification(2f));
+    }
+    private IEnumerator PopupNotification(float _timeInSeconds)
+    {
+        notificationPopupPanel.SetActive(true);
+        yield return new WaitForSeconds(_timeInSeconds);
+        notificationPopupPanel.SetActive(false);
     }
 }
