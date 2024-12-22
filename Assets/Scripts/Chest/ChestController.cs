@@ -90,7 +90,7 @@ public class ChestController
             Debug.LogError("Chest Unlock Currency Image Field not found in prefab!!");
             return;
         }
-        
+
         UpdateUI();
     }
 
@@ -200,7 +200,7 @@ public class ChestController
         int currencyRequired = GetCurrencyRequiredToUnlock();
         int currencyAvailable = gameManager.GetCurrency(chestUnlockCurrencyType);
 
-        if(currencyRequired <= currencyAvailable && remainingTimeInSeconds > 0)
+        if (currencyRequired <= currencyAvailable && remainingTimeInSeconds > 0)
         {
             gameManager.DeductCurrency(chestUnlockCurrencyType, currencyRequired);
             ChestState = ChestState.Unlocked;
