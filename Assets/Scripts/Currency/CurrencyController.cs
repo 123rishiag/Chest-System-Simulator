@@ -14,7 +14,7 @@ namespace ServiceLocator.Currency
             currencyModel = new CurrencyModel(_currencyData);
             currencyView = Object.Instantiate(_currencyPrefab, _parentTransform).GetComponent<CurrencyView>();
 
-            // Setting View Properties and updating UI
+            // Setting Elements
             currencyView.SetViewProperties(this);
             currencyView.UpdateUI();
         }

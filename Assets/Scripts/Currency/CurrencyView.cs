@@ -45,7 +45,7 @@ namespace ServiceLocator.Currency
             currencyImage.color = new Color(currencyController.GetCurrencyModel().CurrencyData.imageColor.r,
                 currencyController.GetCurrencyModel().CurrencyData.imageColor.g,
                 currencyController.GetCurrencyModel().CurrencyData.imageColor.b,
-                1.0f);
+                currencyImage.color.a);
         }
     }
 }

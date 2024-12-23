@@ -7,6 +7,7 @@ namespace ServiceLocator.Chest
     [CreateAssetMenu(fileName = "ChestConfig", menuName = "ScriptableObjects/ChestConfig")]
     public class ChestConfig : ScriptableObject
     {
+        public ChestView chestPrefab;
         public int minChestCount;
         public int maxChestCount;
         public List<ChestData> chests;
@@ -18,7 +19,7 @@ namespace ServiceLocator.Chest
         public ChestType chestType;
         public float unlockTimeInMinutes;
         public CurrencyType chestUnlockCurrencyType; // currency Used to Unlock Chest before Timer
-        public int chestUnlockMinutesSingleCurrency; //  minutes unlocked by a single currency
+        public int chestUnlockMinutesSingleInCurrency; //  minutes unlocked by a single currency
         public List<ChestRewards> rewards;
     }
 

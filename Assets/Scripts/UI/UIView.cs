@@ -7,9 +7,6 @@ namespace ServiceLocator.UI
 {
     public class UIView : MonoBehaviour
     {
-        [Header("Prefabs")]
-        [SerializeField] public GameObject chestPrefab;
-
         [Header("UI Elements")]
         [SerializeField] public Button generateChestButton;
 
@@ -36,15 +33,16 @@ namespace ServiceLocator.UI
                 Debug.LogError("Generate Chest Button reference is null!!");
                 return;
             }
+
             if (currencyPanel == null)
             {
                 Debug.LogError("Currency Panel reference is null!!");
                 return;
             }
 
-            if (chestSlotContentPanel == null || chestPrefab == null)
+            if (chestSlotContentPanel == null)
             {
-                Debug.LogError("Chest Slot Panel or Prefab reference is null!!");
+                Debug.LogError("Chest Slot Panel reference is null!!");
                 return;
             }
 
@@ -53,21 +51,25 @@ namespace ServiceLocator.UI
                 Debug.LogError("Chest Processing Panel not found!!");
                 return;
             }
+
             if (chestProcessingActionOneButton == null || chestProcessingActionOneText == null)
             {
                 Debug.LogError("Chest Processing Action One Button or Text Field not found in panel!!");
                 return;
             }
+
             if (chestProcessingActionTwoButton == null || chestProcessingActionTwoText == null)
             {
                 Debug.LogError("Chest Processing Action Two Button or Text Field not found in panel!!");
                 return;
             }
+
             if (chestProcessingCloseButton == null)
             {
                 Debug.LogError("Chest Processing Close Button not found in panel!!");
                 return;
             }
+
             if (notificationPopupPanel == null || notificationPopupText == null)
             {
                 Debug.LogError("Notification Popup Panel or Text Field reference is null!!");

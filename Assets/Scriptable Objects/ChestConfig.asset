@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fbac56005fb4864ca2f53b8f8485d93, type: 3}
   m_Name: ChestConfig
   m_EditorClassIdentifier: 
-  chestPrefab: {fileID: 1442585979719524587, guid: 609e66cd92c6b08419834ee1e992ab92, type: 3}
+  chestPrefab: {fileID: 6451342755534293711, guid: 609e66cd92c6b08419834ee1e992ab92, type: 3}
   minChestCount: 4
   maxChestCount: 10
   chests:
   - chestType: 0
     unlockTimeInMinutes: 0.1
     chestUnlockCurrencyType: 1
-    chestUnlockMinutesSingleCurrency: 1
+    chestUnlockMinutesSingleInCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 100
@@ -30,7 +30,7 @@ MonoBehaviour:
   - chestType: 1
     unlockTimeInMinutes: 30
     chestUnlockCurrencyType: 1
-    chestUnlockMinutesSingleCurrency: 1
+    chestUnlockMinutesSingleInCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 300
@@ -41,7 +41,7 @@ MonoBehaviour:
   - chestType: 2
     unlockTimeInMinutes: 60
     chestUnlockCurrencyType: 1
-    chestUnlockMinutesSingleCurrency: 1
+    chestUnlockMinutesSingleInCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 600
@@ -52,7 +52,7 @@ MonoBehaviour:
   - chestType: 3
     unlockTimeInMinutes: 180
     chestUnlockCurrencyType: 1
-    chestUnlockMinutesSingleCurrency: 1
+    chestUnlockMinutesSingleInCurrency: 1
     rewards:
     - currencyType: 0
       minValue: 1000

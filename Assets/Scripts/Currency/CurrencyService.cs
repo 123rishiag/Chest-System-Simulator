@@ -53,7 +53,8 @@ namespace ServiceLocator.Currency
             foreach (var currencyData in currencyConfig.currencies)
             {
                 var currencyController = new CurrencyController(currencyData,
-                    uiService.GetUIController().GetUIView().currencyPanel, currencyConfig.currencyPrefab);
+                    uiService.GetUIController().GetUIView().currencyPanel,
+                    currencyConfig.currencyPrefab);
                 currencyControllers.Add(currencyController);
             }
         }
