@@ -14,7 +14,7 @@ namespace ServiceLocator.Main
 
         // Scriptable Objects
         [Header("Scriptable Objects")]
-        [SerializeField] private UIService uiCanvas;
+        [SerializeField] private UIView uiCanvas;
         [SerializeField] private CurrencyConfig currencyConfig;
         [SerializeField] private ChestConfig chestConfig;
 
@@ -25,7 +25,7 @@ namespace ServiceLocator.Main
         }
         private void CreateServices()
         {
-            uiService = uiCanvas.GetComponent<UIService>();
+            uiService = new UIService(uiCanvas);
             currencyService = new CurrencyService(currencyConfig);
             chestService = new ChestService(chestConfig);
         }

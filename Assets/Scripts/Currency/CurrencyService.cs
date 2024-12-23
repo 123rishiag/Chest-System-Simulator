@@ -46,7 +46,9 @@ namespace ServiceLocator.Currency
             // Initializing a CurrencyController for each currency in the config
             foreach (var currencyData in currencyConfig.currencies)
             {
-                var currencyController = new CurrencyController(currencyData, uiService.currencyPanel, uiService.currencyPrefab);
+                var currencyController = new CurrencyController(currencyData,
+                    uiService.GetUIController().GetUIView().currencyPanel,
+                    uiService.GetUIController().GetUIView().currencyPrefab);
                 currencyControllers.Add(currencyController);
             }
         }

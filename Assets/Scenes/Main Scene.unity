@@ -167,20 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17508054a2c75e840bc18eb2cae66a7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiCanvas: {fileID: 1350383568}
+  uiCanvas: {fileID: 1482541469}
   currencyConfig: {fileID: 11400000, guid: 8fdc332941bef3048b0ef9101ad27dc3, type: 2}
   chestConfig: {fileID: 11400000, guid: 5cba5710d016ede43a16940115fcbf95, type: 2}
---- !u!114 &1350383568 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 861794354411791806, guid: 05da8258a141e2c489ee93090bb7d02a, type: 3}
-  m_PrefabInstance: {fileID: 2083523745296975272}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0bc2fff94e17f841951ed1e3168162c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1457288457
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,6 +238,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1482541469 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6670922690836279692, guid: 05da8258a141e2c489ee93090bb7d02a, type: 3}
+  m_PrefabInstance: {fileID: 2083523745296975272}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 127f733dd040f574e9d0d5f7bc68c6c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2083523745296975272
 PrefabInstance:
   m_ObjectHideFlags: 0
