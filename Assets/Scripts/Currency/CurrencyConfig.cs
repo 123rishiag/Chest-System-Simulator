@@ -5,6 +5,7 @@ namespace ServiceLocator.Currency
     [CreateAssetMenu(fileName = "CurrencyConfig", menuName = "ScriptableObjects/CurrencyConfig")]
     public class CurrencyConfig : ScriptableObject
     {
+        public CurrencyView currencyPrefab;
         public CurrencyData[] currencies;
     }
 

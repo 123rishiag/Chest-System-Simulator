@@ -8,7 +8,6 @@ namespace ServiceLocator.UI
     public class UIView : MonoBehaviour
     {
         [Header("Prefabs")]
-        [SerializeField] public GameObject currencyPrefab;
         [SerializeField] public GameObject chestPrefab;
 
         [Header("UI Elements")]
@@ -34,18 +33,18 @@ namespace ServiceLocator.UI
         {
             if (generateChestButton == null)
             {
-                Debug.LogWarning("Generate Chest Button reference is null!!");
+                Debug.LogError("Generate Chest Button reference is null!!");
                 return;
             }
-            if (currencyPanel == null || currencyPrefab == null)
+            if (currencyPanel == null)
             {
-                Debug.LogWarning("Currency Panel or Prefab reference is null!!");
+                Debug.LogError("Currency Panel reference is null!!");
                 return;
             }
 
             if (chestSlotContentPanel == null || chestPrefab == null)
             {
-                Debug.LogWarning("Chest Slot Panel or Prefab reference is null!!");
+                Debug.LogError("Chest Slot Panel or Prefab reference is null!!");
                 return;
             }
 

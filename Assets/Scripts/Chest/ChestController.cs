@@ -57,7 +57,7 @@ namespace ServiceLocator.Chest
 
             if (chestObject == null || chestButton == null)
             {
-                Debug.LogError("Chest Prefab or Button not found!");
+                Debug.LogError("Chest Prefab or Button not found!!");
                 return;
             }
 
@@ -189,7 +189,7 @@ namespace ServiceLocator.Chest
         }
         private void UpdateUI()
         {
-            CurrencyData currencyData = currencyService.GetCurrencyData(chestUnlockCurrencyType);
+            CurrencyData currencyData = currencyService.GetCurrencyController(chestUnlockCurrencyType).GetCurrencyModel().CurrencyData;
 
             chestImage.color = GetImageColor();
             chestMessageOneText.text = FormatTime(remainingTimeInSeconds);
@@ -226,7 +226,7 @@ namespace ServiceLocator.Chest
         private void ProcessUnlockChestWithCurrency()
         {
             int currencyRequired = GetCurrencyRequiredToUnlock();
-            int currencyAvailable = currencyService.GetCurrency(chestUnlockCurrencyType);
+            int currencyAvailable = currencyService.GetCurrencyController(chestUnlockCurrencyType).GetCurrencyModel().CurrencyValue;
 
             if (currencyRequired <= currencyAvailable && remainingTimeInSeconds > 0)
             {
