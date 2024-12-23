@@ -1,4 +1,4 @@
-using ServiceLocator.Currency;
+using ServiceLocator.Event;
 using ServiceLocator.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +14,8 @@ namespace ServiceLocator.Chest
         private Queue<ChestController> chestUnlockQueue;
 
         // Private Services
+        private EventService eventService;
         private UIService uiService;
-        private CurrencyService currencyService;
 
         public ChestService(ChestConfig _chestConfig)
         {
@@ -28,11 +28,11 @@ namespace ServiceLocator.Chest
             ValidateReferences();
         }
 
-        public void Init(UIService _uiService, CurrencyService _currencyService)
+        public void Init(EventService _eventService, UIService _uiService)
         {
             // Setting Services
+            eventService = _eventService;
             uiService = _uiService;
-            currencyService = _currencyService;
 
             // Adding Chests
             CreateRandomChests();
@@ -79,7 +79,7 @@ namespace ServiceLocator.Chest
                 var chestController = new ChestController(chestData,
                     uiService.GetUIController().GetUIView().chestSlotContentPanel,
                     chestConfig.chestPrefab,
-                    uiService, currencyService, this);
+                    eventService, uiService, this);
                 chestControllers.Add(chestController);
             }
         }

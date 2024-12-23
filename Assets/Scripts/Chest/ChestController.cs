@@ -1,4 +1,5 @@
 using ServiceLocator.Currency;
+using ServiceLocator.Event;
 using ServiceLocator.UI;
 using UnityEngine;
 
@@ -11,24 +12,24 @@ namespace ServiceLocator.Chest
         private ChestView chestView;
 
         // Private Services
+        private EventService eventService;
         private UIService uiService;
-        private CurrencyService currencyService;
         private ChestService chestService;
 
         public ChestController(ChestData _chestData, Transform _parentTransform, ChestView _chestPrefab,
-            UIService _uiService, CurrencyService _currencyService, ChestService _chestService)
+            EventService _eventService, UIService _uiService, ChestService _chestService)
         {
             // Setting Variables
             chestModel = new ChestModel(_chestData);
             chestView = Object.Instantiate(_chestPrefab, _parentTransform).GetComponent<ChestView>();
 
             // Setting Services
+            eventService = _eventService;
             uiService = _uiService;
-            currencyService = _currencyService;
             chestService = _chestService;
 
             // Setting Elements
-            chestModel.ChestUnlockCurrencyModel = currencyService.GetCurrencyController(chestModel.ChestUnlockCurrencyType).GetCurrencyModel();
+            chestModel.ChestUnlockCurrencyModel = eventService.OnGetCurrencyControllerEvent.Invoke<CurrencyController>(chestModel.ChestUnlockCurrencyType).GetCurrencyModel();
             chestView.SetViewProperties(this);
             chestView.UpdateUI();
         }
@@ -151,7 +152,7 @@ namespace ServiceLocator.Chest
 
             if (currencyRequired <= currencyAvailable && chestModel.RemainingTimeInSeconds > 0)
             {
-                currencyService.DeductCurrency(chestModel.ChestUnlockCurrencyType, currencyRequired);
+                eventService.OnDeductCurrencyEvent.Invoke(chestModel.ChestUnlockCurrencyType, currencyRequired);
                 chestModel.ChestState = ChestState.Unlocked;
                 chestModel.IsCurrencyUsedToUnlock = true;
                 uiService.GetUIController().ShowNotification($"Chest unlocked with {currencyRequired} {chestModel.ChestUnlockCurrencyType}s!!");
@@ -172,7 +173,7 @@ namespace ServiceLocator.Chest
             foreach (var reward in chestModel.ChestData.rewards)
             {
                 int rewardRandomValue = Random.Range(reward.minValue, reward.maxValue + 1);
-                currencyService.AddCurrency(reward.currencyType, rewardRandomValue);
+                eventService.OnAddCurrencyEvent.Invoke(reward.currencyType, rewardRandomValue);
                 rewardText += $" {rewardRandomValue} {reward.currencyType}s";
             }
             chestModel.ChestState = ChestState.Collected;
@@ -183,7 +184,7 @@ namespace ServiceLocator.Chest
             if (chestModel.IsCurrencyUsedToUnlock)
             {
                 int currencyRequired = GetCurrencyRequiredToUnlock();
-                currencyService.AddCurrency(chestModel.ChestUnlockCurrencyType, currencyRequired);
+                eventService.OnAddCurrencyEvent.Invoke(chestModel.ChestUnlockCurrencyType, currencyRequired);
                 chestModel.ChestState = ChestState.Locked;
                 chestModel.IsCurrencyUsedToUnlock = false;
                 uiService.GetUIController().ShowNotification($"Reverted {chestModel.ChestUnlockCurrencyType} chest unlock. You gained {currencyRequired} {chestModel.ChestUnlockCurrencyType}s!!");
