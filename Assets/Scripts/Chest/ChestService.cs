@@ -37,7 +37,7 @@ namespace ServiceLocator.Chest
             CreateRandomChests();
 
             // Adding Listener to Chest Buttons
-            uiService.AddGenerateChestButtonToListener(CreateChest);
+            uiService.GetUIController().AddGenerateChestButtonToListener(CreateChest);
         }
 
         private void ValidateReferences()
@@ -69,7 +69,9 @@ namespace ServiceLocator.Chest
             // Initializing a ChestController for random chest
             if (chestControllers.Count < chestConfig.maxChestCount)
             {
-                var chestController = new ChestController(chestData, uiService.chestSlotContentPanel, uiService.chestPrefab,
+                var chestController = new ChestController(chestData,
+                    uiService.GetUIController().GetUIView().chestSlotContentPanel,
+                    uiService.GetUIController().GetUIView().chestPrefab,
                     uiService, currencyService, this);
                 chestControllers.Add(chestController);
             }

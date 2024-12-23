@@ -123,7 +123,7 @@ namespace ServiceLocator.Chest
                     chestButton.onClick.RemoveAllListeners();
                     chestButton.onClick.AddListener(() =>
                     {
-                        uiService.ConfigureButtons(
+                        uiService.GetUIController().ConfigureButtons(
                             () => ProcessStartUnlocking(),
                             () => ProcessUnlockChestWithCurrency(),
                             "Start Timer",
@@ -136,7 +136,7 @@ namespace ServiceLocator.Chest
                     chestButton.onClick.RemoveAllListeners();
                     chestButton.onClick.AddListener(() =>
                     {
-                        uiService.ConfigureButtons(
+                        uiService.GetUIController().ConfigureButtons(
                             () => ProcessUnlockChestWithCurrency(),
                             () => ProcessStopUnlocking(),
                             $"Unlock With {ChestData.chestUnlockCurrencyType}s",
@@ -150,7 +150,7 @@ namespace ServiceLocator.Chest
                     ProcessUnlockChest();
                     chestButton.onClick.AddListener(() =>
                     {
-                        uiService.ConfigureButtons(
+                        uiService.GetUIController().ConfigureButtons(
                             () => ProcessUnlockChestWithCurrency(),
                             () => ProcessStopUnlocking(),
                             $"Unlock With {ChestData.chestUnlockCurrencyType}s",
@@ -163,7 +163,7 @@ namespace ServiceLocator.Chest
                     chestButton.onClick.RemoveAllListeners();
                     chestButton.onClick.AddListener(() =>
                     {
-                        uiService.ConfigureButtons(
+                        uiService.GetUIController().ConfigureButtons(
                             () => ProcessCollectChest(),
                             () => ProcessUndoCurrencyPurchase(),
                             "Collect Chest",
@@ -204,13 +204,13 @@ namespace ServiceLocator.Chest
             if (!chestService.IsAnyChestUnlocking())
             {
                 ChestState = ChestState.Unlocking;
-                uiService.ShowNotification("Timer Started!!");
+                uiService.GetUIController().ShowNotification("Timer Started!!");
             }
             else
             {
                 ChestState = ChestState.Unlock_Queue;
                 chestService.AddChestToQueue(this);
-                uiService.ShowNotification("Timer Already Running for another chest. Adding to Queue!!");
+                uiService.GetUIController().ShowNotification("Timer Already Running for another chest. Adding to Queue!!");
             }
 
         }
@@ -220,7 +220,7 @@ namespace ServiceLocator.Chest
             {
                 remainingTimeInSeconds = 0;
                 ChestState = ChestState.Unlocked;
-                uiService.ShowNotification("Timer Completed. Chest Unlocked!!");
+                uiService.GetUIController().ShowNotification("Timer Completed. Chest Unlocked!!");
             }
         }
         private void ProcessUnlockChestWithCurrency()
@@ -233,17 +233,17 @@ namespace ServiceLocator.Chest
                 currencyService.DeductCurrency(chestUnlockCurrencyType, currencyRequired);
                 ChestState = ChestState.Unlocked;
                 IsCurrencyUsedToUnlock = true;
-                uiService.ShowNotification($"Chest unlocked with {currencyRequired} {chestUnlockCurrencyType}s!!");
+                uiService.GetUIController().ShowNotification($"Chest unlocked with {currencyRequired} {chestUnlockCurrencyType}s!!");
             }
             else
             {
-                uiService.ShowNotification($"Chest can't be unlocked. {currencyRequired} {chestUnlockCurrencyType}s required!!");
+                uiService.GetUIController().ShowNotification($"Chest can't be unlocked. {currencyRequired} {chestUnlockCurrencyType}s required!!");
             }
         }
         private void ProcessStopUnlocking()
         {
             ChestState = ChestState.Locked;
-            uiService.ShowNotification($"Chest stopped Unlocking!!");
+            uiService.GetUIController().ShowNotification($"Chest stopped Unlocking!!");
         }
         private void ProcessCollectChest()
         {
@@ -255,7 +255,7 @@ namespace ServiceLocator.Chest
                 rewardText += $" {rewardRandomValue} {reward.currencyType}s";
             }
             ChestState = ChestState.Collected;
-            uiService.ShowNotification($"Chest Collected!! You gained {rewardText}!!");
+            uiService.GetUIController().ShowNotification($"Chest Collected!! You gained {rewardText}!!");
         }
         private void ProcessUndoCurrencyPurchase()
         {
@@ -265,7 +265,7 @@ namespace ServiceLocator.Chest
                 currencyService.AddCurrency(chestUnlockCurrencyType, currencyRequired);
                 ChestState = ChestState.Locked;
                 IsCurrencyUsedToUnlock = false;
-                uiService.ShowNotification($"Reverted {chestUnlockCurrencyType} chest unlock. You gained {currencyRequired} {chestUnlockCurrencyType}s!!");
+                uiService.GetUIController().ShowNotification($"Reverted {chestUnlockCurrencyType} chest unlock. You gained {currencyRequired} {chestUnlockCurrencyType}s!!");
             }
         }
         private string GetUndoCurrencyPurchaseString()

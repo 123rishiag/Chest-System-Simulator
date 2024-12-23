@@ -2854,7 +2854,7 @@ GameObject:
   - component: {fileID: 8604574825388780430}
   - component: {fileID: 2352251241997428113}
   - component: {fileID: 8481916440574053956}
-  - component: {fileID: 861794354411791806}
+  - component: {fileID: 6670922690836279692}
   m_Layer: 5
   m_Name: GameScreenCanvas
   m_TagString: Untagged
@@ -2948,7 +2948,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &861794354411791806
+--- !u!114 &6670922690836279692
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2957,7 +2957,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6832869865635585097}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0bc2fff94e17f841951ed1e3168162c, type: 3}
+  m_Script: {fileID: 11500000, guid: 127f733dd040f574e9d0d5f7bc68c6c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currencyPrefab: {fileID: 7852301056319017168, guid: 115a7cfb2e7868944995755752eed27e, type: 3}
