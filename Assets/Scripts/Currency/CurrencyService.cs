@@ -13,39 +13,30 @@ namespace ServiceLocator.Currency
 
         // Private Services
         private EventService eventService;
-        private UIService uiService;
 
-        public CurrencyService(CurrencyConfig _currencyConfig)
+        public CurrencyService(CurrencyConfig _currencyConfig, EventService _eventService)
         {
             // Setting Variables
             currencyConfig = _currencyConfig;
             currencyControllers = new List<CurrencyController>();
 
-            // Validating References
-            ValidateReferences();
-        }
-
-        ~CurrencyService()
-        {
-            // Removing Listeners
-            eventService.OnGetCurrencyControllerEvent.RemoveListener(GetCurrencyController);
-            eventService.OnAddCurrencyEvent.RemoveListener(AddCurrency);
-            eventService.OnDeductCurrencyEvent.RemoveListener(DeductCurrency);
-        }
-
-        public void Init(EventService _eventService, UIService _uiService)
-        {
             // Setting Services
             eventService = _eventService;
-            uiService = _uiService;
+
+            // Validating References
+            ValidateReferences();
 
             // Adding Currencies
             CreateCurrencies();
 
             // Adding Listeners
             eventService.OnGetCurrencyControllerEvent.AddListener(GetCurrencyController);
-            eventService.OnAddCurrencyEvent.AddListener(AddCurrency);
-            eventService.OnDeductCurrencyEvent.AddListener(DeductCurrency);
+        }
+
+        ~CurrencyService()
+        {
+            // Removing Listeners
+            eventService.OnGetCurrencyControllerEvent.RemoveListener(GetCurrencyController);
         }
 
         private void ValidateReferences()
@@ -69,7 +60,7 @@ namespace ServiceLocator.Currency
             foreach (var currencyData in currencyConfig.currencies)
             {
                 var currencyController = new CurrencyController(currencyData,
-                    uiService.GetUIController().GetUIView().currencyPanel,
+                    eventService.OnGetUIControllerEvent.Invoke<UIController>().GetUIView().currencyPanel,
                     currencyConfig.currencyPrefab);
                 currencyControllers.Add(currencyController);
             }
@@ -79,18 +70,6 @@ namespace ServiceLocator.Currency
         private CurrencyController GetCurrencyController(CurrencyType _currencyType)
         {
             return currencyControllers.Find(controller => controller.GetCurrencyModel().CurrencyType == _currencyType);
-        }
-
-        // Setters
-        private void AddCurrency(CurrencyType _currencyType, int _value)
-        {
-            var currencyController = GetCurrencyController(_currencyType);
-            currencyController.AddCurrency(_value);
-        }
-        private void DeductCurrency(CurrencyType _currencyType, int _value)
-        {
-            var currencyController = GetCurrencyController(_currencyType);
-            currencyController.DeductCurrency(_value);
         }
     }
 }

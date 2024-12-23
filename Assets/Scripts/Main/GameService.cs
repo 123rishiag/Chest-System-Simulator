@@ -23,19 +23,14 @@ namespace ServiceLocator.Main
         private void Start()
         {
             CreateServices();
-            InjectDependencies();
         }
+
         private void CreateServices()
         {
             eventService = new EventService();
-            uiService = new UIService(uiCanvas);
-            currencyService = new CurrencyService(currencyConfig);
-            chestService = new ChestService(chestConfig);
-        }
-        private void InjectDependencies()
-        {
-            currencyService.Init(eventService, uiService);
-            chestService.Init(eventService, uiService);
+            uiService = new UIService(uiCanvas, eventService);
+            currencyService = new CurrencyService(currencyConfig, eventService);
+            chestService = new ChestService(chestConfig, eventService);
         }
 
         private void Update()
