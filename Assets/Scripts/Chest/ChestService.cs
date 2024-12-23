@@ -15,30 +15,25 @@ namespace ServiceLocator.Chest
 
         // Private Services
         private EventService eventService;
-        private UIService uiService;
 
-        public ChestService(ChestConfig _chestConfig)
+        public ChestService(ChestConfig _chestConfig, EventService _eventService)
         {
             // Setting Variables
             chestConfig = _chestConfig;
             chestControllers = new List<ChestController>();
             chestUnlockQueue = new Queue<ChestController>();
 
-            // Validating References
-            ValidateReferences();
-        }
-
-        public void Init(EventService _eventService, UIService _uiService)
-        {
             // Setting Services
             eventService = _eventService;
-            uiService = _uiService;
+
+            // Validating References
+            ValidateReferences();
 
             // Adding Chests
             CreateRandomChests();
 
             // Adding Listener to Chest Buttons
-            uiService.GetUIController().AddGenerateChestButtonToListener(CreateChest);
+            eventService.OnGetUIControllerEvent.Invoke<UIController>().AddGenerateChestButtonToListener(CreateChest);
         }
 
         private void ValidateReferences()
@@ -77,10 +72,14 @@ namespace ServiceLocator.Chest
             if (chestControllers.Count < chestConfig.maxChestCount)
             {
                 var chestController = new ChestController(chestData,
-                    uiService.GetUIController().GetUIView().chestSlotContentPanel,
+                   eventService.OnGetUIControllerEvent.Invoke<UIController>().GetUIView().chestSlotContentPanel,
                     chestConfig.chestPrefab,
-                    eventService, uiService, this);
+                    eventService, this);
                 chestControllers.Add(chestController);
+            }
+            else
+            {
+                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Can't add more chest. Max Limit is {chestConfig.maxChestCount}!!");
             }
         }
         private void RemoveChest(ChestController _chestController)

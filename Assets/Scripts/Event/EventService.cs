@@ -1,24 +1,21 @@
 using ServiceLocator.Currency;
+using ServiceLocator.UI;
 using System;
 
 namespace ServiceLocator.Event
 {
     public class EventService
     {
+        // Function to return UIController
+        public EventController<Func<UIController>> OnGetUIControllerEvent { get; private set; }
+
         // Function to Get Currency Controller based on Currency Type
         public EventController<Func<CurrencyType, CurrencyController>> OnGetCurrencyControllerEvent { get; private set; }
 
-        // Method to Add Currency based on Currency Type
-        public EventController<Action<CurrencyType, int>> OnAddCurrencyEvent { get; private set; }
-
-        // Method to Deduct Currency based on Currency Type
-        public EventController<Action<CurrencyType, int>> OnDeductCurrencyEvent { get; private set; }
-
         public EventService()
         {
+            OnGetUIControllerEvent = new EventController<Func<UIController>>();
             OnGetCurrencyControllerEvent = new EventController<Func<CurrencyType, CurrencyController>>();
-            OnAddCurrencyEvent = new EventController<Action<CurrencyType, int>>();
-            OnDeductCurrencyEvent = new EventController<Action<CurrencyType, int>>();
         }
     }
 }
