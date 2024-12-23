@@ -1,6 +1,7 @@
 using ServiceLocator.Currency;
 using ServiceLocator.UI;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ServiceLocator.Chest
@@ -47,6 +48,12 @@ namespace ServiceLocator.Chest
                 Debug.LogError("Chest Scriptable Object reference is null!!");
                 return;
             }
+
+            if (chestConfig.chestPrefab == null)
+            {
+                Debug.LogError("Chest Prefab reference is null!!");
+                return;
+            }
         }
 
         private void CreateRandomChests()
@@ -59,7 +66,7 @@ namespace ServiceLocator.Chest
         private void CreateChest()
         {
             // Fetching Random Chest
-            ChestData chestData = GetRandomChest();
+            ChestData chestData = GetRandomChestData();
             if (chestData == null)
             {
                 Debug.LogError("Random Chest Data is null!!");
@@ -71,7 +78,7 @@ namespace ServiceLocator.Chest
             {
                 var chestController = new ChestController(chestData,
                     uiService.GetUIController().GetUIView().chestSlotContentPanel,
-                    uiService.GetUIController().GetUIView().chestPrefab,
+                    chestConfig.chestPrefab,
                     uiService, currencyService, this);
                 chestControllers.Add(chestController);
             }
@@ -84,27 +91,31 @@ namespace ServiceLocator.Chest
 
         public void Update()
         {
-            // Updating Chests
+            // Updating All Chests
+            ProcessUpdateAllChests();
+
+            // Processing Chests in Queue
+            ProcessChestsInQueue();
+        }
+        private void ProcessUpdateAllChests()
+        {
             for (int i = chestControllers.Count - 1; i >= 0; i--)
             {
                 var chestController = chestControllers[i];
                 chestController.Update();
 
-                if (chestController.ChestState == ChestState.Collected)
+                if (chestController.GetChestModel().ChestState == ChestState.Collected)
                 {
                     RemoveChest(chestController);
                 }
             }
-
-            // Processing Chests in Queue
-            ProcessChestsInQueue();
         }
         private void ProcessChestsInQueue()
         {
             while (chestUnlockQueue.Count > 0)
             {
                 var chestController = chestUnlockQueue.Peek();
-                if (chestController.ChestState != ChestState.Unlock_Queue)
+                if (chestController.GetChestModel().ChestState != ChestState.Unlock_Queue)
                 {
                     chestUnlockQueue.Dequeue();
                 }
@@ -113,32 +124,25 @@ namespace ServiceLocator.Chest
                     if (!IsAnyChestUnlocking())
                     {
                         chestController = chestUnlockQueue.Dequeue();
-                        chestController.ChestState = ChestState.Unlocking;
+                        chestController.GetChestModel().ChestState = ChestState.Unlocking;
                     }
                     break;
                 }
             }
         }
 
+        // Other Functions
         public void AddChestToQueue(ChestController _chestController)
         {
             chestUnlockQueue.Enqueue(_chestController);
         }
-
         public bool IsAnyChestUnlocking()
         {
-            foreach (var chestController in chestControllers)
-            {
-                if (chestController.ChestState == ChestState.Unlocking)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return chestControllers.Any(chest => chest.GetChestModel().ChestState == ChestState.Unlocking);
         }
 
         // Getters
-        private ChestData GetRandomChest()
+        private ChestData GetRandomChestData()
         {
             // Calculating the total weight
             int totalWeight = chestConfig.chests.Count * (chestConfig.chests.Count + 1) / 2;

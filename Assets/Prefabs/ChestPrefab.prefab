@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 1442585979719524588}
   - component: {fileID: 1442585979719524589}
   - component: {fileID: 6481596038050667589}
+  - component: {fileID: 6451342755534293711}
   m_Layer: 5
   m_Name: ChestPrefab
   m_TagString: Untagged
@@ -284,6 +285,25 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
+--- !u!114 &6451342755534293711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1442585979719524587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90b8997d3ed5ed747971a29ab4a2064b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestButton: {fileID: 1442585979719524589}
+  chestImage: {fileID: 1442585979719524588}
+  chestMessageOneText: {fileID: 1299343324659846643}
+  chestMessageTwoText: {fileID: 2791833003236110705}
+  chestUnlockCurrencyPanel: {fileID: 8959949123912383588}
+  chestUnlockCurrencyText: {fileID: 8913911484516130990}
+  chestUnlockCurrencyImage: {fileID: 5154793102692130147}
 --- !u!1 &1740783643788285638
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,7 +1051,7 @@ GameObject:
   - component: {fileID: 756790325248795900}
   - component: {fileID: 2478581610294259046}
   m_Layer: 5
-  m_Name: ChestIcon
+  m_Name: ChestImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
