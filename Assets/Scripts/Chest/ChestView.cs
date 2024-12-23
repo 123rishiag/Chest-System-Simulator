@@ -73,7 +73,7 @@ namespace ServiceLocator.Chest
         private IEnumerator DestroyObject(float _timeInSeconds)
         {
             yield return new WaitForSeconds(_timeInSeconds);
-            Object.Destroy(this.gameObject);
+            Object.Destroy(gameObject);
         }
 
         // Getters

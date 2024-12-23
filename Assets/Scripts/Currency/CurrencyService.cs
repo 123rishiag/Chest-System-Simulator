@@ -1,3 +1,4 @@
+using ServiceLocator.Event;
 using ServiceLocator.UI;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace ServiceLocator.Currency
         private List<CurrencyController> currencyControllers;
 
         // Private Services
+        private EventService eventService;
         private UIService uiService;
 
         public CurrencyService(CurrencyConfig _currencyConfig)
@@ -23,13 +25,27 @@ namespace ServiceLocator.Currency
             ValidateReferences();
         }
 
-        public void Init(UIService _uiService)
+        ~CurrencyService()
+        {
+            // Removing Listeners
+            eventService.OnGetCurrencyControllerEvent.RemoveListener(GetCurrencyController);
+            eventService.OnAddCurrencyEvent.RemoveListener(AddCurrency);
+            eventService.OnDeductCurrencyEvent.RemoveListener(DeductCurrency);
+        }
+
+        public void Init(EventService _eventService, UIService _uiService)
         {
             // Setting Services
+            eventService = _eventService;
             uiService = _uiService;
 
             // Adding Currencies
             CreateCurrencies();
+
+            // Adding Listeners
+            eventService.OnGetCurrencyControllerEvent.AddListener(GetCurrencyController);
+            eventService.OnAddCurrencyEvent.AddListener(AddCurrency);
+            eventService.OnDeductCurrencyEvent.AddListener(DeductCurrency);
         }
 
         private void ValidateReferences()
@@ -60,18 +76,18 @@ namespace ServiceLocator.Currency
         }
 
         // Getters
-        public CurrencyController GetCurrencyController(CurrencyType _currencyType)
+        private CurrencyController GetCurrencyController(CurrencyType _currencyType)
         {
             return currencyControllers.Find(controller => controller.GetCurrencyModel().CurrencyType == _currencyType);
         }
 
         // Setters
-        public void AddCurrency(CurrencyType _currencyType, int _value)
+        private void AddCurrency(CurrencyType _currencyType, int _value)
         {
             var currencyController = GetCurrencyController(_currencyType);
             currencyController.AddCurrency(_value);
         }
-        public void DeductCurrency(CurrencyType _currencyType, int _value)
+        private void DeductCurrency(CurrencyType _currencyType, int _value)
         {
             var currencyController = GetCurrencyController(_currencyType);
             currencyController.DeductCurrency(_value);
