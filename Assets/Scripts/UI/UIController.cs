@@ -10,7 +10,7 @@ namespace ServiceLocator.UI
             // Setting Variables
             uiView = _uiCanvas.GetComponent<UIView>();
 
-            // Verifying all Inspector Elements
+            // Validating References
             uiView.ValidateReferences();
         }
 

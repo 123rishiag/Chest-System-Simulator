@@ -36,7 +36,13 @@ namespace ServiceLocator.Currency
         {
             if (currencyConfig == null)
             {
-                Debug.LogWarning("Currency Scriptable Object reference is null!");
+                Debug.LogError("Currency Scriptable Object reference is null!!");
+                return;
+            }
+
+            if (currencyConfig.currencyPrefab == null)
+            {
+                Debug.LogError("Currency Prefab reference is null!!");
                 return;
             }
         }
@@ -47,33 +53,15 @@ namespace ServiceLocator.Currency
             foreach (var currencyData in currencyConfig.currencies)
             {
                 var currencyController = new CurrencyController(currencyData,
-                    uiService.GetUIController().GetUIView().currencyPanel,
-                    uiService.GetUIController().GetUIView().currencyPrefab);
+                    uiService.GetUIController().GetUIView().currencyPanel, currencyConfig.currencyPrefab);
                 currencyControllers.Add(currencyController);
             }
         }
 
         // Getters
-        public int GetCurrency(CurrencyType _currencyType)
+        public CurrencyController GetCurrencyController(CurrencyType _currencyType)
         {
-            var currencyController = GetCurrencyController(_currencyType);
-            return currencyController.CurrencyValue;
-        }
-        public CurrencyData GetCurrencyData(CurrencyType _currencyType)
-        {
-            var currencyController = GetCurrencyController(_currencyType);
-            return currencyController.CurrencyData;
-        }
-        private CurrencyController GetCurrencyController(CurrencyType _currencyType)
-        {
-            foreach (var currencyController in currencyControllers)
-            {
-                if (currencyController.CurrencyType == _currencyType)
-                {
-                    return currencyController;
-                }
-            }
-            return null;
+            return currencyControllers.Find(controller => controller.GetCurrencyModel().CurrencyType == _currencyType);
         }
 
         // Setters

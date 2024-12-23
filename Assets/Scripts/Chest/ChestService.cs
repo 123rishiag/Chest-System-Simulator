@@ -44,7 +44,7 @@ namespace ServiceLocator.Chest
         {
             if (chestConfig == null)
             {
-                Debug.LogWarning("Chest Scriptable Object reference is null!");
+                Debug.LogError("Chest Scriptable Object reference is null!!");
                 return;
             }
         }
@@ -62,7 +62,7 @@ namespace ServiceLocator.Chest
             ChestData chestData = GetRandomChest();
             if (chestData == null)
             {
-                Debug.Log("Random Chest Data is null!");
+                Debug.LogError("Random Chest Data is null!!");
                 return;
             }
 
@@ -120,6 +120,11 @@ namespace ServiceLocator.Chest
             }
         }
 
+        public void AddChestToQueue(ChestController _chestController)
+        {
+            chestUnlockQueue.Enqueue(_chestController);
+        }
+
         public bool IsAnyChestUnlocking()
         {
             foreach (var chestController in chestControllers)
@@ -130,11 +135,6 @@ namespace ServiceLocator.Chest
                 }
             }
             return false;
-        }
-
-        public void AddChestToQueue(ChestController _chestController)
-        {
-            chestUnlockQueue.Enqueue(_chestController);
         }
 
         // Getters
@@ -157,7 +157,7 @@ namespace ServiceLocator.Chest
                 }
             }
 
-            Debug.LogError("Failed to select a chest. Check weight logic!");
+            Debug.LogError("Failed to select a chest. Check weight logic!!");
             return null;
         }
     }

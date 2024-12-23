@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d02c5f925cd86914d873a88d4b583352, type: 3}
   m_Name: CurrencyConfig
   m_EditorClassIdentifier: 
+  currencyPrefab: {fileID: -6484483390737980161, guid: 115a7cfb2e7868944995755752eed27e, type: 3}
   currencies:
   - currencyType: 0
     initialValue: 999
