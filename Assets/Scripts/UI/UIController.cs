@@ -1,3 +1,6 @@
+using ServiceLocator.Event;
+using ServiceLocator.Sound;
+
 namespace ServiceLocator.UI
 {
     public class UIController
@@ -5,10 +8,16 @@ namespace ServiceLocator.UI
         // Private Variables
         private UIView uiView;
 
-        public UIController(UIView _uiCanvas)
+        // Private Services
+        private EventService eventService;
+
+        public UIController(UIView _uiCanvas, EventService _eventService)
         {
             // Setting Variables
             uiView = _uiCanvas.GetComponent<UIView>();
+
+            // Setting Services
+            eventService = _eventService;
 
             // Validating References
             uiView.ValidateReferences();
@@ -31,12 +40,16 @@ namespace ServiceLocator.UI
             // Set the panel active
             uiView.chestProcessingPanel.SetActive(true);
 
+            // Playing Sound
+            eventService.OnPlaySoundEffectEvent.Invoke(SoundType.ConfirmationPopup);
+
             // Configure Button 1
             uiView.chestProcessingActionOneButton.onClick.RemoveAllListeners();
             uiView.chestProcessingActionOneButton.onClick.AddListener(() =>
             {
                 _onButtonOneClick?.Invoke();
                 uiView.chestProcessingPanel.SetActive(false);
+                eventService.OnPlaySoundEffectEvent.Invoke(SoundType.ButtonClick);
             });
 
             // Configure Button 2
@@ -45,6 +58,7 @@ namespace ServiceLocator.UI
             {
                 _onButtonTwoClick?.Invoke();
                 uiView.chestProcessingPanel.SetActive(false);
+                eventService.OnPlaySoundEffectEvent.Invoke(SoundType.ButtonClick);
             });
 
             // Configure Close Button
@@ -52,6 +66,7 @@ namespace ServiceLocator.UI
             uiView.chestProcessingCloseButton.onClick.AddListener(() =>
             {
                 uiView.chestProcessingPanel.SetActive(false);
+                eventService.OnPlaySoundEffectEvent.Invoke(SoundType.ButtonClick);
             });
         }
 
