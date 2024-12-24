@@ -2854,6 +2854,7 @@ GameObject:
   - component: {fileID: 8604574825388780430}
   - component: {fileID: 2352251241997428113}
   - component: {fileID: 8481916440574053956}
+  - component: {fileID: 1971005178273754451}
   - component: {fileID: 6670922690836279692}
   m_Layer: 5
   m_Name: GameScreenCanvas
@@ -2948,6 +2949,14 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!81 &1971005178273754451
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6832869865635585097}
+  m_Enabled: 1
 --- !u!114 &6670922690836279692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2960,8 +2969,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 127f733dd040f574e9d0d5f7bc68c6c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currencyPrefab: {fileID: 7852301056319017168, guid: 115a7cfb2e7868944995755752eed27e, type: 3}
-  chestPrefab: {fileID: 1442585979719524587, guid: 609e66cd92c6b08419834ee1e992ab92, type: 3}
   generateChestButton: {fileID: 4290044072070741704}
   currencyPanel: {fileID: 649832965242984896}
   chestSlotContentPanel: {fileID: 5096889197095828938}
