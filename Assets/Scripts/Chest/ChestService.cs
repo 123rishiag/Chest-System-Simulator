@@ -10,7 +10,7 @@ namespace ServiceLocator.Chest
     {
         // Private Variables
         private ChestConfig chestConfig;
-        private List<ChestController> chestControllers;
+        private ChestPool chestPool;
         private Queue<ChestController> chestUnlockQueue;
 
         // Private Services
@@ -20,7 +20,9 @@ namespace ServiceLocator.Chest
         {
             // Setting Variables
             chestConfig = _chestConfig;
-            chestControllers = new List<ChestController>();
+            chestPool = new ChestPool(chestConfig,
+                   _eventService.OnGetUIControllerEvent.Invoke<UIController>().GetUIView().chestSlotContentPanel,
+                    _eventService, this);
             chestUnlockQueue = new Queue<ChestController>();
 
             // Setting Services
@@ -60,34 +62,17 @@ namespace ServiceLocator.Chest
         }
         private void CreateChest()
         {
-            // Fetching Random Chest
-            ChestData chestData = GetRandomChestData();
-            if (chestData == null)
-            {
-                Debug.LogError("Random Chest Data is null!!");
-                return;
-            }
-
             // Initializing a ChestController for random chest
-            if (chestControllers.Count < chestConfig.maxChestCount)
+            if (chestPool.pooledItems.Count(item => item.isUsed) < chestConfig.maxChestCount)
             {
-                var chestController = new ChestController(chestData,
-                   eventService.OnGetUIControllerEvent.Invoke<UIController>().GetUIView().chestSlotContentPanel,
-                    chestConfig.chestPrefab,
-                    eventService, this);
-                chestControllers.Add(chestController);
+                chestPool.GetChest();
             }
             else
             {
                 eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Can't add more chest. Max Limit is {chestConfig.maxChestCount}!!");
             }
         }
-        private void RemoveChest(ChestController _chestController)
-        {
-            _chestController.Destroy();
-            chestControllers.Remove(_chestController);
-        }
-
+        private void ReturnChestToPool(ChestController _chestToReturn) => chestPool.ReturnItem(_chestToReturn);
         public void Update()
         {
             // Updating All Chests
@@ -98,14 +83,20 @@ namespace ServiceLocator.Chest
         }
         private void ProcessUpdateAllChests()
         {
-            for (int i = chestControllers.Count - 1; i >= 0; i--)
+            for (int i = chestPool.pooledItems.Count - 1; i >= 0; i--)
             {
-                var chestController = chestControllers[i];
+                // Skipping if the pooled item's isUsed is false
+                if (!chestPool.pooledItems[i].isUsed)
+                {
+                    continue;
+                }
+
+                var chestController = chestPool.pooledItems[i].Item;
                 chestController.Update();
 
                 if (chestController.GetChestModel().ChestState == ChestState.Collected)
                 {
-                    RemoveChest(chestController);
+                    ReturnChestToPool(chestController);
                 }
             }
         }
@@ -137,31 +128,8 @@ namespace ServiceLocator.Chest
         }
         public bool IsAnyChestUnlocking()
         {
-            return chestControllers.Any(chest => chest.GetChestModel().ChestState == ChestState.Unlocking);
-        }
-
-        // Getters
-        private ChestData GetRandomChestData()
-        {
-            // Calculating the total weight
-            int totalWeight = chestConfig.chests.Count * (chestConfig.chests.Count + 1) / 2;
-
-            // Generating a random number within the total weight
-            int randomValue = Random.Range(1, totalWeight + 1);
-
-            // Selecting a chest based on the random value
-            int cumulativeWeight = 0;
-            for (int i = 0; i < chestConfig.chests.Count; i++)
-            {
-                cumulativeWeight += chestConfig.chests.Count - i;
-                if (randomValue <= cumulativeWeight)
-                {
-                    return chestConfig.chests[i];
-                }
-            }
-
-            Debug.LogError("Failed to select a chest. Check weight logic!!");
-            return null;
+            return chestPool.pooledItems.Any(chest => chest.Item.GetChestModel().ChestState == ChestState.Unlocking
+            && chest.isUsed == true);
         }
     }
 }
