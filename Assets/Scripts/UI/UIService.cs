@@ -13,7 +13,7 @@ namespace ServiceLocator.UI
         public UIService(UIView _uiCanvas, EventService _eventService)
         {
             // Setting Variables
-            uiController = new UIController(_uiCanvas);
+            uiController = new UIController(_uiCanvas, _eventService);
 
             // Setting Services
             eventService = _eventService;

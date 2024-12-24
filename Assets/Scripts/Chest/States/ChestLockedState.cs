@@ -1,3 +1,4 @@
+using ServiceLocator.Sound;
 using ServiceLocator.UI;
 
 namespace ServiceLocator.Chest
@@ -48,6 +49,9 @@ namespace ServiceLocator.Chest
                 Owner.GetEventService().OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
                     "Timer Already Running for another chest. Adding to Queue!!");
             }
+
+            // Playing Sound
+            Owner.GetEventService().OnPlaySoundEffectEvent.Invoke(SoundType.StartTimer);
         }
     }
 }

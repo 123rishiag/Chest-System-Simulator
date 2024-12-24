@@ -1,3 +1,4 @@
+using ServiceLocator.Sound;
 using ServiceLocator.UI;
 using UnityEngine;
 
@@ -53,6 +54,9 @@ namespace ServiceLocator.Chest
             stateMachine.ChangeState(ChestState.Locked);
             Owner.GetEventService().OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
                 $"Chest stopped Unlocking!!");
+
+            // Playing Sound
+            Owner.GetEventService().OnPlaySoundEffectEvent.Invoke(SoundType.ChestLocked);
         }
     }
 }

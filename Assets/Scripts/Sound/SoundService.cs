@@ -21,10 +21,11 @@ namespace ServiceLocator.Sound
             soundConfig = _soundConfig;
             sfxSource = _sfxSource;
             bgSource = _bgSource;
-            PlayBackgroundMusic(SoundType.BackgroundMusic, true);
 
             // Setting Services
             eventService = _eventService;
+
+            PlayBackgroundMusic(SoundType.BackgroundMusic, true);
 
             // Adding Listeners
             eventService.OnPlaySoundEffectEvent.AddListener(PlaySoundEffect);

@@ -1,5 +1,6 @@
 using ServiceLocator.Currency;
 using ServiceLocator.Event;
+using ServiceLocator.Sound;
 using ServiceLocator.UI;
 using UnityEngine;
 
@@ -22,14 +23,14 @@ namespace ServiceLocator.Chest
             // Setting Variables
             chestModel = new ChestModel(_chestData);
             chestView = Object.Instantiate(_chestPrefab, _parentTransform).GetComponent<ChestView>();
-            CreateStateMachine();
-            chestStateMachine.ChangeState(ChestState.Locked);
 
             // Setting Services
             eventService = _eventService;
             chestService = _chestService;
 
             // Setting Elements
+            CreateStateMachine();
+            chestStateMachine.ChangeState(ChestState.Locked);
             chestModel.ChestUnlockCurrencyModel = eventService.OnGetCurrencyControllerEvent.Invoke<CurrencyController>(chestModel.ChestUnlockCurrencyType).GetCurrencyModel();
             chestView.SetViewProperties(this);
             chestView.UpdateUI();
@@ -69,6 +70,9 @@ namespace ServiceLocator.Chest
 
                 eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
                     $"Chest unlocked with {currencyRequired} {chestModel.ChestUnlockCurrencyType}s!!");
+
+                // Playing Sound
+                eventService.OnPlaySoundEffectEvent.Invoke(SoundType.CurrencyUsed);
             }
             else
             {

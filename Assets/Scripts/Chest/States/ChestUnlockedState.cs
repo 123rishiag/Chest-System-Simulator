@@ -1,4 +1,5 @@
 using ServiceLocator.Currency;
+using ServiceLocator.Sound;
 using ServiceLocator.UI;
 using UnityEngine;
 
@@ -54,6 +55,9 @@ namespace ServiceLocator.Chest
             // Showing All Rewards Notification
             Owner.GetEventService().OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
                 $"Chest Collected!! You gained {rewardText}!!");
+
+            // Playing Sound
+            Owner.GetEventService().OnPlaySoundEffectEvent.Invoke(SoundType.ChestCollected);
         }
 
         private void ProcessUndoCurrencyPurchase()
@@ -74,6 +78,9 @@ namespace ServiceLocator.Chest
                 Owner.GetEventService().OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
                     $"Reverted {Owner.GetChestModel().ChestUnlockCurrencyType} chest unlock. " +
                     $"You gained {currencyRequired} {Owner.GetChestModel().ChestUnlockCurrencyType}s!!");
+
+                // Playing Sound
+                Owner.GetEventService().OnPlaySoundEffectEvent.Invoke(SoundType.ChestLocked);
             }
         }
     }

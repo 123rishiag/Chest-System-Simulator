@@ -1,4 +1,5 @@
 using ServiceLocator.Event;
+using ServiceLocator.Sound;
 using ServiceLocator.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,10 +67,13 @@ namespace ServiceLocator.Chest
             if (chestPool.pooledItems.Count(item => item.isUsed) < chestConfig.maxChestCount)
             {
                 chestPool.GetChest();
+                eventService.OnPlaySoundEffectEvent.Invoke(SoundType.GenerateChest);
             }
             else
             {
-                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Can't add more chest. Max Limit is {chestConfig.maxChestCount}!!");
+                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
+                    $"Can't add more chest. Max Limit is {chestConfig.maxChestCount}!!");
+                eventService.OnPlaySoundEffectEvent.Invoke(SoundType.NotificationPopup);
             }
         }
         private void ReturnChestToPool(ChestController _chestToReturn) => chestPool.ReturnItem(_chestToReturn);
