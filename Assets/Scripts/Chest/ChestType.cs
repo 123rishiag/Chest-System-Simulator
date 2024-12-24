@@ -7,7 +7,6 @@ namespace ServiceLocator.Chest
         Epic,
         Legendary
     }
-
     public enum ChestState
     {
         Locked,

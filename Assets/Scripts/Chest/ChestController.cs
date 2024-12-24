@@ -10,6 +10,7 @@ namespace ServiceLocator.Chest
         // Private Variables
         private ChestModel chestModel;
         private ChestView chestView;
+        private ChestStateMachine chestStateMachine;
 
         // Private Services
         private EventService eventService;
@@ -21,6 +22,8 @@ namespace ServiceLocator.Chest
             // Setting Variables
             chestModel = new ChestModel(_chestData);
             chestView = Object.Instantiate(_chestPrefab, _parentTransform).GetComponent<ChestView>();
+            CreateStateMachine();
+            chestStateMachine.ChangeState(ChestState.Locked);
 
             // Setting Services
             eventService = _eventService;
@@ -32,170 +35,50 @@ namespace ServiceLocator.Chest
             chestView.UpdateUI();
         }
 
+        private void CreateStateMachine() => chestStateMachine = new ChestStateMachine(this);
+
         public void Reset(ChestData _chestData, int _viewIndex)
         {
             chestModel.ResetModel(_chestData);
+            chestStateMachine.ChangeState(ChestState.Locked);
             chestView.ResetView(_viewIndex);
         }
 
         public void Update()
         {
-            PeformStateTransition();
-            UpdateTimer();
+            chestStateMachine.Update();
             chestView.UpdateUI();
         }
 
-        private void PeformStateTransition()
-        {
-            switch (chestModel.ChestState)
-            {
-                case ChestState.Locked:
-                    chestView.chestUnlockCurrencyPanel.SetActive(true);
-                    chestView.chestButton.interactable = true;
-                    chestView.chestButton.onClick.RemoveAllListeners();
-                    chestView.chestButton.onClick.AddListener(() =>
-                    {
-                        eventService.OnGetUIControllerEvent.Invoke<UIController>().ConfigureButtons(
-                            () => ProcessStartUnlocking(),
-                            () => ProcessUnlockChestWithCurrency(),
-                            "Start Timer",
-                            $"Unlock With {chestModel.ChestData.chestUnlockCurrencyType}s"
-                        );
-                    });
-                    break;
-                case ChestState.Unlock_Queue:
-                    chestView.chestUnlockCurrencyPanel.SetActive(true);
-                    chestView.chestButton.interactable = true;
-                    chestView.chestButton.onClick.RemoveAllListeners();
-                    chestView.chestButton.onClick.AddListener(() =>
-                    {
-                        eventService.OnGetUIControllerEvent.Invoke<UIController>().ConfigureButtons(
-                            () => ProcessUnlockChestWithCurrency(),
-                            () => { },
-                            $"Unlock With {chestModel.ChestData.chestUnlockCurrencyType}s",
-                            "Cancel"
-                        );
-                    });
-                    break;
-                case ChestState.Unlocking:
-                    chestView.chestUnlockCurrencyPanel.SetActive(true);
-                    chestView.chestButton.interactable = true;
-                    chestView.chestButton.onClick.RemoveAllListeners();
-                    ProcessUnlockChest();
-                    chestView.chestButton.onClick.AddListener(() =>
-                    {
-                        eventService.OnGetUIControllerEvent.Invoke<UIController>().ConfigureButtons(
-                            () => ProcessUnlockChestWithCurrency(),
-                            () => ProcessStopUnlocking(),
-                            $"Unlock With {chestModel.ChestData.chestUnlockCurrencyType}s",
-                            "Stop Unlocking"
-                        );
-                    });
-                    break;
-                case ChestState.Unlocked:
-                    chestView.chestUnlockCurrencyPanel.SetActive(false);
-                    chestView.chestButton.interactable = true;
-                    chestView.chestButton.onClick.RemoveAllListeners();
-                    chestView.chestButton.onClick.AddListener(() =>
-                    {
-                        eventService.OnGetUIControllerEvent.Invoke<UIController>().ConfigureButtons(
-                            () => ProcessCollectChest(),
-                            () => ProcessUndoCurrencyPurchase(),
-                            "Collect Chest",
-                            GetUndoCurrencyPurchaseString()
-                        );
-                    });
-                    break;
-                case ChestState.Collected:
-                    chestView.chestUnlockCurrencyPanel.SetActive(false);
-                    chestView.chestButton.interactable = false;
-                    break;
-                default:
-                    chestView.chestUnlockCurrencyPanel.SetActive(false);
-                    break;
-            }
-        }
-        private void UpdateTimer()
-        {
-            if (chestModel.ChestState == ChestState.Unlocking)
-            {
-                chestModel.RemainingTimeInSeconds -= Time.deltaTime;
-            }
-        }
-
         // Processing Methods
-        private void ProcessStartUnlocking()
-        {
-            if (!chestService.IsAnyChestUnlocking())
-            {
-                chestModel.ChestState = ChestState.Unlocking;
-                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification("Timer Started!!");
-            }
-            else
-            {
-                chestModel.ChestState = ChestState.Unlock_Queue;
-                chestService.AddChestToQueue(this);
-                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification("Timer Already Running for another chest. Adding to Queue!!");
-            }
-
-        }
-        private void ProcessUnlockChest()
-        {
-            if (chestModel.RemainingTimeInSeconds <= 0)
-            {
-                chestModel.RemainingTimeInSeconds = 0;
-                chestModel.ChestState = ChestState.Unlocked;
-                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification("Timer Completed. Chest Unlocked!!");
-            }
-        }
-        private void ProcessUnlockChestWithCurrency()
+        public void UnlockWithCurrency()
         {
             int currencyRequired = GetCurrencyRequiredToUnlock();
             int currencyAvailable = chestModel.ChestUnlockCurrencyModel.CurrencyValue;
 
+            // If Currency in stock is enough to purchase the price and timer for chest hasn't runout
+            // Then, unlocking the chest, reducing the currency and setting Chest State to "Unlocked"
             if (currencyRequired <= currencyAvailable && chestModel.RemainingTimeInSeconds > 0)
             {
-                eventService.OnGetCurrencyControllerEvent.Invoke<CurrencyController>(chestModel.ChestUnlockCurrencyType).DeductCurrency(currencyRequired);
-                chestModel.ChestState = ChestState.Unlocked;
+                chestStateMachine.ChangeState(ChestState.Unlocked);
                 chestModel.IsCurrencyUsedToUnlock = true;
-                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Chest unlocked with {currencyRequired} {chestModel.ChestUnlockCurrencyType}s!!");
+
+                // Deducting Currency
+                eventService.OnGetCurrencyControllerEvent.Invoke<CurrencyController>(
+                    chestModel.ChestUnlockCurrencyType).DeductCurrency(currencyRequired);
+
+                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
+                    $"Chest unlocked with {currencyRequired} {chestModel.ChestUnlockCurrencyType}s!!");
             }
             else
             {
-                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Chest can't be unlocked. {currencyRequired} {chestModel.ChestUnlockCurrencyType}s required!!");
-            }
-        }
-        private void ProcessStopUnlocking()
-        {
-            chestModel.ChestState = ChestState.Locked;
-            eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Chest stopped Unlocking!!");
-        }
-        private void ProcessCollectChest()
-        {
-            string rewardText = string.Empty;
-            foreach (var reward in chestModel.ChestData.rewards)
-            {
-                int rewardRandomValue = Random.Range(reward.minValue, reward.maxValue + 1);
-                eventService.OnGetCurrencyControllerEvent.Invoke<CurrencyController>(reward.currencyType).AddCurrency(rewardRandomValue);
-                rewardText += $" {rewardRandomValue} {reward.currencyType}s";
-            }
-            chestModel.ChestState = ChestState.Collected;
-            eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Chest Collected!! You gained {rewardText}!!");
-        }
-        private void ProcessUndoCurrencyPurchase()
-        {
-            if (chestModel.IsCurrencyUsedToUnlock)
-            {
-                int currencyRequired = GetCurrencyRequiredToUnlock();
-                eventService.OnGetCurrencyControllerEvent.Invoke<CurrencyController>(chestModel.ChestUnlockCurrencyType).AddCurrency(currencyRequired);
-                chestModel.ChestState = ChestState.Locked;
-                chestModel.IsCurrencyUsedToUnlock = false;
-                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification($"Reverted {chestModel.ChestUnlockCurrencyType} chest unlock. You gained {currencyRequired} {chestModel.ChestUnlockCurrencyType}s!!");
+                eventService.OnGetUIControllerEvent.Invoke<UIController>().ShowNotification(
+                    $"Chest can't be unlocked. {currencyRequired} {chestModel.ChestUnlockCurrencyType}s required!!");
             }
         }
 
         // Getters
-        private string GetUndoCurrencyPurchaseString()
+        public string GetUndoCurrencyPurchaseString()
         {
             return chestModel.IsCurrencyUsedToUnlock ? $"Undo {chestModel.ChestData.chestUnlockCurrencyType}s Purchase" : "Cancel";
         }
@@ -209,9 +92,10 @@ namespace ServiceLocator.Chest
 
             return currencyRequired;
         }
-        public ChestModel GetChestModel()
-        {
-            return chestModel;
-        }
+        public ChestModel GetChestModel() => chestModel;
+        public ChestView GetChestView() => chestView;
+        public ChestStateMachine GetChestStateMachine() => chestStateMachine;
+        public EventService GetEventService() => eventService;
+        public ChestService GetChestService() => chestService;
     }
 }

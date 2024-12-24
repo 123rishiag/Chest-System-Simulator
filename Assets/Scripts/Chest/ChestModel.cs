@@ -13,7 +13,6 @@ namespace ServiceLocator.Chest
         {
             // Setting Variables
             ChestData = _chestData;
-            ChestState = ChestState.Locked;
             ChestType = _chestData.chestType;
             UnlockTimeInMinutes = _chestData.unlockTimeInMinutes;
             RemainingTimeInSeconds = UnlockTimeInMinutes * 60;
@@ -23,7 +22,6 @@ namespace ServiceLocator.Chest
 
         // Getters
         public ChestData ChestData { get; private set; }
-        public ChestState ChestState { get; set; }
         public ChestType ChestType { get; private set; }
         public float UnlockTimeInMinutes { get; private set; }
         public float RemainingTimeInSeconds { get; set; }
