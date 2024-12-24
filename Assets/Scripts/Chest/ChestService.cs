@@ -94,7 +94,7 @@ namespace ServiceLocator.Chest
                 var chestController = chestPool.pooledItems[i].Item;
                 chestController.Update();
 
-                if (chestController.GetChestModel().ChestState == ChestState.Collected)
+                if (chestController.GetChestStateMachine().GetCurrentState() == ChestState.Collected)
                 {
                     ReturnChestToPool(chestController);
                 }
@@ -105,7 +105,7 @@ namespace ServiceLocator.Chest
             while (chestUnlockQueue.Count > 0)
             {
                 var chestController = chestUnlockQueue.Peek();
-                if (chestController.GetChestModel().ChestState != ChestState.Unlock_Queue)
+                if (chestController.GetChestStateMachine().GetCurrentState() != ChestState.Unlock_Queue)
                 {
                     chestUnlockQueue.Dequeue();
                 }
@@ -114,7 +114,7 @@ namespace ServiceLocator.Chest
                     if (!IsAnyChestUnlocking())
                     {
                         chestController = chestUnlockQueue.Dequeue();
-                        chestController.GetChestModel().ChestState = ChestState.Unlocking;
+                        chestController.GetChestStateMachine().ChangeState(ChestState.Unlocking);
                     }
                     break;
                 }
@@ -128,7 +128,7 @@ namespace ServiceLocator.Chest
         }
         public bool IsAnyChestUnlocking()
         {
-            return chestPool.pooledItems.Any(chest => chest.Item.GetChestModel().ChestState == ChestState.Unlocking
+            return chestPool.pooledItems.Any(chest => chest.Item.GetChestStateMachine().GetCurrentState() == ChestState.Unlocking
             && chest.isUsed == true);
         }
     }

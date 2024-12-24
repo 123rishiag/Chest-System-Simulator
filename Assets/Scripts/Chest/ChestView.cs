@@ -87,7 +87,7 @@ namespace ServiceLocator.Chest
         // Getters
         private Color GetImageColor()
         {
-            switch (chestController.GetChestModel().ChestState)
+            switch (chestController.GetChestStateMachine().GetCurrentState())
             {
                 case ChestState.Locked:
                     return new Color(128, 128, 128, chestImage.color.a); // Grey
@@ -152,13 +152,14 @@ namespace ServiceLocator.Chest
             CurrencyData currencyData = chestController.GetChestModel().ChestUnlockCurrencyModel.CurrencyData;
             chestImage.color = GetImageColor();
             chestMessageOneText.text = GetTimeString(chestController.GetChestModel().RemainingTimeInSeconds);
-            chestMessageTwoText.text = $"{chestController.GetChestModel().ChestType} : {chestController.GetChestModel().ChestState}";
+            chestMessageTwoText.text = $"{chestController.GetChestModel().ChestType} : " +
+                $"{chestController.GetChestStateMachine().GetCurrentState()}";
             chestUnlockCurrencyText.text = chestController.GetCurrencyRequiredToUnlock().ToString();
             chestUnlockCurrencyImage.sprite = currencyData.currencyImage;
             chestUnlockCurrencyImage.color = new Color(currencyData.imageColor.r, currencyData.imageColor.g,
                 currencyData.imageColor.b, chestUnlockCurrencyImage.color.a);
 
-            if (chestController.GetChestModel().ChestState == ChestState.Collected)
+            if (chestController.GetChestStateMachine().GetCurrentState() == ChestState.Collected)
             {
                 Hide();
             }
