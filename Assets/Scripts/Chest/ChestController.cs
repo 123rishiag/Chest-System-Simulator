@@ -32,16 +32,17 @@ namespace ServiceLocator.Chest
             chestView.UpdateUI();
         }
 
+        public void Reset(ChestData _chestData, int _viewIndex)
+        {
+            chestModel.ResetModel(_chestData);
+            chestView.ResetView(_viewIndex);
+        }
+
         public void Update()
         {
             PeformStateTransition();
             UpdateTimer();
             chestView.UpdateUI();
-        }
-
-        public void Destroy()
-        {
-            chestView.Destroy();
         }
 
         private void PeformStateTransition()
@@ -50,6 +51,7 @@ namespace ServiceLocator.Chest
             {
                 case ChestState.Locked:
                     chestView.chestUnlockCurrencyPanel.SetActive(true);
+                    chestView.chestButton.interactable = true;
                     chestView.chestButton.onClick.RemoveAllListeners();
                     chestView.chestButton.onClick.AddListener(() =>
                     {
@@ -63,6 +65,7 @@ namespace ServiceLocator.Chest
                     break;
                 case ChestState.Unlock_Queue:
                     chestView.chestUnlockCurrencyPanel.SetActive(true);
+                    chestView.chestButton.interactable = true;
                     chestView.chestButton.onClick.RemoveAllListeners();
                     chestView.chestButton.onClick.AddListener(() =>
                     {
@@ -76,6 +79,7 @@ namespace ServiceLocator.Chest
                     break;
                 case ChestState.Unlocking:
                     chestView.chestUnlockCurrencyPanel.SetActive(true);
+                    chestView.chestButton.interactable = true;
                     chestView.chestButton.onClick.RemoveAllListeners();
                     ProcessUnlockChest();
                     chestView.chestButton.onClick.AddListener(() =>
@@ -90,6 +94,7 @@ namespace ServiceLocator.Chest
                     break;
                 case ChestState.Unlocked:
                     chestView.chestUnlockCurrencyPanel.SetActive(false);
+                    chestView.chestButton.interactable = true;
                     chestView.chestButton.onClick.RemoveAllListeners();
                     chestView.chestButton.onClick.AddListener(() =>
                     {

@@ -66,14 +66,22 @@ namespace ServiceLocator.Chest
             }
         }
 
-        public void Destroy()
+        public void ResetView(int _index)
         {
-            StartCoroutine(DestroyObject(4f));
+            transform.SetSiblingIndex(_index);
         }
-        private IEnumerator DestroyObject(float _timeInSeconds)
+        private void Show()
+        {
+            gameObject.SetActive(true);
+        }
+        private void Hide()
+        {
+            StartCoroutine(HideObject(4f));
+        }
+        private IEnumerator HideObject(float _timeInSeconds)
         {
             yield return new WaitForSeconds(_timeInSeconds);
-            Object.Destroy(gameObject);
+            gameObject.SetActive(false);
         }
 
         // Getters
@@ -149,6 +157,15 @@ namespace ServiceLocator.Chest
             chestUnlockCurrencyImage.sprite = currencyData.currencyImage;
             chestUnlockCurrencyImage.color = new Color(currencyData.imageColor.r, currencyData.imageColor.g,
                 currencyData.imageColor.b, chestUnlockCurrencyImage.color.a);
+
+            if (chestController.GetChestModel().ChestState == ChestState.Collected)
+            {
+                Hide();
+            }
+            else
+            {
+                Show();
+            }
         }
     }
 }

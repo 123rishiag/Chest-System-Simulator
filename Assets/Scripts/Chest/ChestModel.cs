@@ -6,6 +6,11 @@ namespace ServiceLocator.Chest
     {
         public ChestModel(ChestData _chestData)
         {
+            ResetModel(_chestData);
+        }
+
+        public void ResetModel(ChestData _chestData)
+        {
             // Setting Variables
             ChestData = _chestData;
             ChestState = ChestState.Locked;
