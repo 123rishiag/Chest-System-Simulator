@@ -36,7 +36,7 @@ A dynamic and interactive chest management system featuring scrollable chest slo
 
 ### **5. Chest Unlocking System**
 - **Start Timer**: Unlock chests for free, with only one chest unlocking at a time.
-- **Unlock with Currency**: Skip timers using gems (1 Currency Type = Time defined in `ChestConfig`)(1 Gem = 10 minutes).
+- **Unlock with Currency**: Skip timers using gems (1 Currency Type = Time defined in `ChestConfig`) (1 Gem = 10 minutes).
 - **Queue System**: Automatically unlocks chests present inside queue in sequence when slots are occupied.
 
 ### **6. UI and Feedback**
@@ -104,21 +104,21 @@ Below is the block diagram illustrating the architecture:
    - **CurrencyConfig**: Defines initial values and properties for currencies.
    - **CurrencyType**: Enum defining currency types (Coins, Gems).
      
-6. **ChestService**: Handles chest logic, states, and unlocking mechanisms.
-   - **ChestPool**: Reuses chest objects for optimal memory usage.
-   - **ChestController**: Manages chest logic and state transitions.
-   - **ChestModel**: Stores runtime chest data.
-   - **ChestView**: Handles chest UI rendering.
-   - **ChestConfig**: Defines chest properties like rewards and timers.
-   - **ChestType**: Enum defining chest types (Common, Rare, Epic, Legendary) and chest states (Locked, Unlock Queue, Unlocking, Unlocked, Collected).
-   - **IChestState**: Interface defining the common behaviors for all chest states.
-     - **ChestLockedState**: Represents the state where a chest is locked where unlock process has not started.
-     - **ChestUnlockQueueState**: Represents a state where the chest is waiting in a queue to start the unlock time.
-     - **ChestUnlockingState**: Represents the state when the chest's unlock timer is active.
-     - **ChestUnlockedState**: Represents the state when the chest is ready for reward collection.
-     - **ChestCollectedState**: Represents the state when rewards are claimed, and the chest is removed.
-   - **ChestGenericStateMachine**: A generic state machine designed to handle state transitions, parameterized with `ChestController`. This design is segregated to allow for future implementation of chest-specific state machines (e.g., `ChestRareStateMachine`, `ChestEpicStateMachine`) in case subcontrollers of `ChestController` are introduced based on chest type (e.g., `ChestRareController`).
-   - **ChestStateMachine**: A specific implementation of `ChestGenericStateMachine`, managing the current chest's behavior using `ChestController` as its type parameter.
+6. **ChestService**: Manages chest logic, states, and unlocking mechanisms.
+   - **ChestPool**: Optimizes memory usage by reusing chest objects.
+   - **ChestController**: Handles chest logic and manages state transitions.
+   - **ChestModel**: Stores runtime data for individual chests.
+   - **ChestView**: Manages the UI rendering of chests.
+   - **ChestConfig**: Defines chest properties, such as rewards and timers.
+   - **ChestType**: Enum defining chest types (Common, Rare, Epic, Legendary) and states (Locked, Unlock Queue, Unlocking, Unlocked, Collected).
+   - **IChestState**: Interface that defines common behaviors for all chest states. These states are initialized by a child of `ChestGenericStateMachine`, such as `ChestStateMachine`.
+     - **ChestLockedState**: Represents the state where a chest is locked, and the unlock process has not started.
+     - **ChestUnlockQueueState**: Represents the state where the chest is in a queue, waiting for the unlock process to begin.
+     - **ChestUnlockingState**: Represents the state where the chest's unlock timer is active.
+     - **ChestUnlockedState**: Represents the state where the chest is ready for rewards to be collected.
+     - **ChestCollectedState**: Represents the state where rewards have been claimed, and the chest is removed.
+   - **ChestGenericStateMachine**: A generic state machine designed to manage state transitions for `ChestController`. This design allows for future implementation of chest-specific state machines (e.g., `ChestRareStateMachine`, `ChestEpicStateMachine`) if subcontrollers of `ChestController` (e.g., `ChestRareController`) are introduced based on chest type.
+     - **ChestStateMachine**: A specific implementation of `ChestGenericStateMachine` that manages the behavior of a chest. This is created by the `ChestController`.
 
 7. **Utilities**: Provides reusable generic utilities for enhanced code efficiency.
    - **GenericObjectPool**: Manages object pooling for optimal memory usage and performance.
@@ -186,6 +186,6 @@ Below is the block diagram illustrating the architecture:
 
 ## Play Link
 
-[Play the Game]()
+[Play the Game](https://outscal.com/narishabhgarg/game/play-chest-system-simulator-game)
 
 ---
