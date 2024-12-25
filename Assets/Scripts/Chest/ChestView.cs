@@ -138,17 +138,6 @@ namespace ServiceLocator.Chest
             // To apply alpha dynamically
             return new Color(_baseColor.r, _baseColor.g, _baseColor.b, _alpha);
         }
-        private Color GetContrastingTextColor(Color _backgroundColor)
-        {
-            // Calculating brightness (accounting for perceived intensity of RGB components)
-            float brightness = (_backgroundColor.r * 0.299f + _backgroundColor.g * 0.587f + _backgroundColor.b * 0.114f);
-
-            // Adjusting the brightness based on alpha (transparent colors are treated as darker)
-            brightness *= _backgroundColor.a;
-
-            // Determining contrasting color: dark backgrounds get white text, bright backgrounds get black text
-            return brightness > 0.5f ? Color.black : Color.white;
-        }
         private Color GetImageColor()
         {
             switch (chestController.GetChestStateMachine().GetCurrentState())
@@ -192,18 +181,15 @@ namespace ServiceLocator.Chest
 
             // Setting text content and adjusting text color for readability
             chestMessageOneText.text = GetTimeString(chestController.GetChestModel().RemainingTimeInSeconds);
-            chestMessageOneText.color = GetContrastingTextColor(chestImage.color);
 
             chestMessageTwoText.text = $"{chestController.GetChestModel().ChestType} : " +
                 $"{chestController.GetChestStateMachine().GetCurrentState()}";
-            chestMessageTwoText.color = GetContrastingTextColor(chestImage.color);
 
             // Setting the unlock currency panel color
             chestUnlockCurrencyPanelImage.color = ApplyAlpha(GetGradientColor(), chestUnlockCurrencyPanelImage.color.a);
 
             // Setting the unlock currency text and color
             chestUnlockCurrencyText.text = chestController.GetCurrencyRequiredToUnlock().ToString();
-            chestUnlockCurrencyText.color = GetContrastingTextColor(chestUnlockCurrencyPanelImage.color);
 
             // Setting the unlock currency image and its color
             chestUnlockCurrencyImage.sprite = currencyData.currencyImage;
