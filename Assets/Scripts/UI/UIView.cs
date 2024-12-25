@@ -26,6 +26,12 @@ namespace ServiceLocator.UI
         [SerializeField] private GameObject notificationPopupPanel;
         [SerializeField] private TMP_Text notificationPopupText;
 
+        [Header("Main Menu Elements")]
+        [SerializeField] public GameObject mainMenuPanel;
+        [SerializeField] private GameObject mainMenuStartButton;
+        [SerializeField] private GameObject mainMenuQuitButton;
+
+
         public void ValidateReferences()
         {
             if (generateChestButton == null)
@@ -75,6 +81,12 @@ namespace ServiceLocator.UI
                 Debug.LogError("Notification Popup Panel or Text Field reference is null!!");
                 return;
             }
+
+            if (mainMenuPanel == null || mainMenuStartButton == null || mainMenuQuitButton == null)
+            {
+                Debug.LogError("Main Menu Panel or Start or Quit Button Field reference is null!!");
+                return;
+            }
         }
 
         public void ConfigureButtonsText(string _buttonOneText, string _buttonTwoText)
@@ -97,6 +109,15 @@ namespace ServiceLocator.UI
             notificationPopupPanel.SetActive(true);
             yield return new WaitForSeconds(_timeInSeconds);
             notificationPopupPanel.SetActive(false);
+        }
+
+        public (Button, Button) CreateMainMenuButtons()
+        {
+            // Fetching UI Elements
+            Button startButton = mainMenuStartButton.GetComponent<Button>();
+            Button quitButton = mainMenuQuitButton.GetComponent<Button>();
+
+            return (startButton, quitButton);
         }
     }
 }
