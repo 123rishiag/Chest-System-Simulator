@@ -1,5 +1,7 @@
 using ServiceLocator.Event;
 using ServiceLocator.Sound;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace ServiceLocator.UI
 {
@@ -21,6 +23,7 @@ namespace ServiceLocator.UI
 
             // Validating References
             uiView.ValidateReferences();
+            SetMainMenuButtons();
         }
 
         public void AddGenerateChestButtonToListener(System.Action _onButtonClick)
@@ -73,6 +76,37 @@ namespace ServiceLocator.UI
         public void ShowNotification(string _text)
         {
             uiView.ShowNotification(_text);
+        }
+
+        private void SetMainMenuButtons()
+        {
+            // Fetching UI Elements
+            Button startButton;
+            Button quitButton;
+
+            (startButton, quitButton) = uiView.CreateMainMenuButtons();
+
+            if (startButton != null)
+            {
+                startButton.onClick.RemoveAllListeners();
+                startButton.onClick.AddListener(() =>
+                {
+                    eventService.OnPlaySoundEffectEvent.Invoke(SoundType.ButtonClick);
+                    uiView.mainMenuPanel.SetActive(false);
+                }
+                );
+            }
+
+            if (quitButton != null)
+            {
+                quitButton.onClick.RemoveAllListeners();
+                quitButton.onClick.AddListener(() =>
+                {
+                    eventService.OnPlaySoundEffectEvent.Invoke(SoundType.ButtonClick);
+                    Application.Quit();
+                }
+                );
+            }
         }
 
         // Getters
