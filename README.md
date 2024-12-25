@@ -111,14 +111,14 @@ Below is the block diagram illustrating the architecture:
    - **ChestView**: Manages the UI rendering of chests.
    - **ChestConfig**: Defines chest properties, such as rewards and timers.
    - **ChestType**: Enum defining chest types (Common, Rare, Epic, Legendary) and states (Locked, Unlock Queue, Unlocking, Unlocked, Collected).
+   - **ChestGenericStateMachine**: A generic state machine designed to manage state transitions for `ChestController`. This design allows for future implementation of chest-specific state machines (e.g., `ChestRareStateMachine`, `ChestEpicStateMachine`) if subcontrollers of `ChestController` (e.g., `ChestRareController`) are introduced based on chest type.
+     - **ChestStateMachine**: A specific implementation of `ChestGenericStateMachine` that manages the behavior of a chest. This is created by the `ChestController`.
    - **IChestState**: Interface that defines common behaviors for all chest states. These states are initialized by a child of `ChestGenericStateMachine`, such as `ChestStateMachine`.
      - **ChestLockedState**: Represents the state where a chest is locked, and the unlock process has not started.
      - **ChestUnlockQueueState**: Represents the state where the chest is in a queue, waiting for the unlock process to begin.
      - **ChestUnlockingState**: Represents the state where the chest's unlock timer is active.
      - **ChestUnlockedState**: Represents the state where the chest is ready for rewards to be collected.
      - **ChestCollectedState**: Represents the state where rewards have been claimed, and the chest is removed.
-   - **ChestGenericStateMachine**: A generic state machine designed to manage state transitions for `ChestController`. This design allows for future implementation of chest-specific state machines (e.g., `ChestRareStateMachine`, `ChestEpicStateMachine`) if subcontrollers of `ChestController` (e.g., `ChestRareController`) are introduced based on chest type.
-     - **ChestStateMachine**: A specific implementation of `ChestGenericStateMachine` that manages the behavior of a chest. This is created by the `ChestController`.
 
 7. **Utilities**: Provides reusable generic utilities for enhanced code efficiency.
    - **GenericObjectPool**: Manages object pooling for optimal memory usage and performance.
