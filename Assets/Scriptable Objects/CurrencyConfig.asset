@@ -16,9 +16,9 @@ MonoBehaviour:
   currencies:
   - currencyType: 0
     initialValue: 999
-    currencyImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-    imageColor: {r: 0.8773585, g: 0.8559332, b: 0.25161976, a: 0}
+    currencyImage: {fileID: 21300000, guid: f65bae9e1a148eb43bd1a260bc4fc98e, type: 3}
+    imageColor: {r: 1, g: 1, b: 1, a: 0}
   - currencyType: 1
     initialValue: 999
-    currencyImage: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-    imageColor: {r: 0.115454145, g: 0.3962264, b: 0.061302926, a: 0}
+    currencyImage: {fileID: 21300000, guid: fadffe3a6e5b854418c3e7fe0db50e76, type: 3}
+    imageColor: {r: 1, g: 1, b: 1, a: 0}
