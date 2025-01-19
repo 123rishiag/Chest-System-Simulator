@@ -4,6 +4,14 @@ A dynamic and interactive chest management system featuring scrollable chest slo
 
 ---
 
+## Architectural Overview
+
+Below is the block diagram illustrating the architecture:
+
+![Architectural Overview](Documents/block_diagram.png)
+
+---
+
 ## Gameplay Elements
 
 ### **1. Currency Types and Properties**
@@ -71,14 +79,6 @@ Manages chest states like Locked, Unlock Queue, Unlocking, Unlocked, and Collect
 
 ### 7. **Scriptable Objects**  
 Enhances modularity by storing independent data. `ChestConfig`, `CurrencyConfig` and `SoundConfig` define chest, currency and sound properties.
-
----
-
-## Architectural Overview
-
-Below is the block diagram illustrating the architecture:
-
-![Architectural Overview](Documents/block_diagram.png)
 
 ---
 
